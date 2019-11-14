@@ -4,11 +4,13 @@ plugins {
     kotlin("jvm") version "1.3.50"
 }
 
-version = "1.0-SNAPSHOT"
+version = "0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
 }
+
+configurations.forEach { it.exclude("org.slf4j", "slf4j-log4j12") }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
@@ -26,6 +28,7 @@ dependencies {
     /* Graph Output */
     implementation("com.github.sh0nk:matplotlib4j:0.4.0")
 
+    /* Testing */
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
 }
 
