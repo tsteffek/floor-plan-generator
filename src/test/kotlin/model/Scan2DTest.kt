@@ -19,10 +19,6 @@ class Scan2DTest : FreeSpec() {
 
             val testScanner = Scanner("TestScanner-Total", false, 45.0, true)
             val tsv = """
-                id	step size	distance	quality
-                1	0	1	54
-                2	1	1.41421356	58
-                13	2	1	62
             """.trimIndent()
 
             "fromTSV should load into rawData in correct order" {
