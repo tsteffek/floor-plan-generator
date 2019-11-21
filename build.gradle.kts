@@ -1,10 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+version = "0.2-SNAPSHOT"
+
 plugins {
     kotlin("jvm") version "1.3.50"
+    application
 }
-
-version = "0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -22,6 +23,9 @@ dependencies {
     /* REST */
     implementation("com.sparkjava:spark-kotlin:1.0.0-alpha")
 
+    /* CLI */
+    implementation("com.github.ajalt:clikt:2.3.0")
+
     /* Reader */
     implementation("com.github.doyaaaaaken:kotlin-csv-jvm:0.7.3")
 
@@ -30,6 +34,22 @@ dependencies {
 
     /* Testing */
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+}
+
+application {
+    mainClassName = "bin/CLIKt"
+}
+
+val jar by tasks.getting(Jar::class) {
+    manifest {
+        attributes["Main-Class"] = "bin.CLIKt"
+    }
+
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
 }
 
 val test by tasks.getting(Test::class) {
