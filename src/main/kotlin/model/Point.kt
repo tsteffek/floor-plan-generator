@@ -3,8 +3,6 @@ package model
 import mu.KotlinLogging
 import kotlin.math.sqrt
 
-private val logger by lazy { KotlinLogging.logger {} }
-
 data class Point(val x: Double, val y: Double, val quality: Int) {
     constructor(rotation: Pair<Double, Double>, length: Double, quality: Int) : this(
         rotation.first * length,
