@@ -6,6 +6,7 @@ version = "0.2-SNAPSHOT"
 plugins {
     kotlin("jvm") version "1.3.50"
     application
+    jacoco
 }
 
 repositories {
@@ -47,6 +48,13 @@ tasks.startScripts {
 
 val test by tasks.getting(Test::class) {
     useJUnitPlatform { }
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.isEnabled = true
+        html.isEnabled = false
+    }
 }
 
 tasks.withType<KotlinCompile> {
