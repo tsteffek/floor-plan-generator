@@ -14,8 +14,8 @@ jobs:
           java-version: 8
       - name: build
         uses: eskatos/gradle-command-action@v1
-          with:
-            arguments: build
+        with:
+          arguments: build
       - name: test
         uses: eskatos/gradle-command-action@v1
         with:
