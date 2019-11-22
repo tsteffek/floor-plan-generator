@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.kotlin.dsl.startScripts
 
 version = "0.2-SNAPSHOT"
 
@@ -40,16 +41,8 @@ application {
     mainClassName = "bin/CLIKt"
 }
 
-val jar by tasks.getting(Jar::class) {
-    manifest {
-        attributes["Main-Class"] = "bin.CLIKt"
-    }
-
-    from {
-        configurations.compile.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
-    }
+tasks.startScripts {
+    applicationName = "fpg"
 }
 
 val test by tasks.getting(Test::class) {
