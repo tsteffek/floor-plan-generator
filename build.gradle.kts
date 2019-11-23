@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.kotlin.dsl.startScripts
-
-version = "0.2-SNAPSHOT"
+import de.gliderpilot.gradle.semanticrelease.GitRepo
 
 plugins {
     kotlin("jvm") version "1.3.50"
@@ -42,19 +41,19 @@ application {
     mainClassName = "bin/CLIKt"
 }
 
+tasks.jacocoTestReport {
+    reports {
+        xml.isEnabled = true
+        html.isEnabled = false
+    }
+}
+
 tasks.startScripts {
     applicationName = "fpg"
 }
 
 val test by tasks.getting(Test::class) {
     useJUnitPlatform { }
-}
-
-tasks.jacocoTestReport {
-    reports {
-        xml.isEnabled = true
-        html.isEnabled = false
-    }
 }
 
 tasks.withType<KotlinCompile> {
