@@ -17,7 +17,7 @@ class Scan2DTest : FreeSpec() {
     init {
         "companion object" - {
 
-            val testScanner = Scanner("TestScanner-Total", false, 45.0, true)
+            val testScanner = Scanner("TestScanner-Total", false, 45.0, true, 100)
             val tsv = """
                 id	step size	distance	quality
                 1	0	1	54
@@ -36,7 +36,7 @@ class Scan2DTest : FreeSpec() {
         "pointCloud" - {
             "from total values" - {
 
-                val testScanner = Scanner("TestScanner-Total", false, 45.0, true)
+                val testScanner = Scanner("TestScanner-Total", false, 45.0, true, 100)
                 val tsv = """
                     id	step size	distance	quality
                     1	0	1	54
@@ -80,7 +80,7 @@ class Scan2DTest : FreeSpec() {
 
             "from incremental values" - {
 
-                val testScannerInc = Scanner("TestScanner-Inc", true, 45.0, true)
+                val testScannerInc = Scanner("TestScanner-Inc", true, 45.0, true, 100)
 
                 val tsvInc = """
                     id	step size	distance	quality
