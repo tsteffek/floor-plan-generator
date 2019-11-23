@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.kotlin.dsl.startScripts
-import de.gliderpilot.gradle.semanticrelease.GitRepo
 
 plugins {
     kotlin("jvm") version "1.3.50"
