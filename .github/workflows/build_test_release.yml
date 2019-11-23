@@ -28,7 +28,7 @@ jobs:
         with:
             token: ${{ secrets.CODECOV_TOKEN }}
   deploy:
-    if: github.base_ref == "master"
+    if: github.base_ref == 'master'
     needs: test
     runs-on: ubuntu-latest
     steps:
