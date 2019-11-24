@@ -4,8 +4,6 @@ on:
     branches:
       - master
       - dev
-      - beta
-      - fix-semantic-release
 jobs:
   Release:
     runs-on: ubuntu-latest
@@ -26,10 +24,7 @@ jobs:
           node-version: 12
       - name: Install semantic-release
         run: npm i -g semantic-release@beta @semantic-release/changelog
-      - run: ls
-      - name: Print .releaserc.json
-        run: cat .releaserc.json
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release --debug
+        run: npx semantic-release

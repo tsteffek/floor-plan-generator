@@ -4,10 +4,6 @@
     {
       "name": "dev",
       "prerelease": true
-    },
-    {
-      "name": "beta",
-      "prerelease": true
     }
   ],
   "plugins": [
