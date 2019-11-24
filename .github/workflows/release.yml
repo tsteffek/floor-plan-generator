@@ -25,7 +25,7 @@ jobs:
         with:
           node-version: 12
       - name: Install semantic-release
-        run: npm i -g semantic-release @semantic-release/changelog
+        run: npm i -g semantic-release@beta @semantic-release/changelog
       - run: ls
       - name: Print .releaserc.json
         run: cat .releaserc.json
