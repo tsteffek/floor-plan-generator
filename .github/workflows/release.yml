@@ -20,7 +20,7 @@ jobs:
         with:
           arguments: distZip
       - run: ls
-      - name: Print releaserc.json
+      - name: Print .releaserc.json
         run: cat .releaserc.json
       - name: Setup Node.js
         uses: actions/setup-node@v1
