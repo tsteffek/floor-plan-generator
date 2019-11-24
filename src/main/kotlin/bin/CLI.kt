@@ -71,7 +71,7 @@ class CLI : CliktCommand() {
             file,
             Scanner(scannerId, incremental, stepAngle, clockwise, qualityMax)
         )
-        val pointCloud = scan.rotate(rotation)
+        val pointCloud = scan.rotateBy(rotation)
 
         if (diagram) {
             val x = pointCloud.map { it.x }

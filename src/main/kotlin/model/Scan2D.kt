@@ -7,8 +7,6 @@ import io.Reader
 import mu.KotlinLogging
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.math.cos
-import kotlin.math.sin
 
 val idKey = "id"
 val stepSizeKey = "step size"
@@ -64,17 +62,8 @@ class Scan2D(val rawData: List<ScanData>, private val scanner: Scanner) {
             }
     }
 
-    fun rotate(angle: Double): List<Point> =
-        pointCloud.map {
-            Point(rotateVec(Pair(it.x, it.y), angle), 1.0, it.quality)
-        }
-
-    private fun rotateVec(vec: Pair<Double, Double>, angle: Double): Pair<Double, Double> {
-        val rad = Math.toRadians(angle)
-        val x2 = cos(rad) * vec.first - sin(rad) * vec.second
-        val y2 = sin(rad) * vec.first + cos(rad) * vec.second
-        return Pair(x2, y2)
-    }
+    fun rotateBy(angle: Double): List<Point> =
+        pointCloud.map { it.rotateBy(angle) }
 
     fun toTSV(): String {
         val sb = StringBuilder()
