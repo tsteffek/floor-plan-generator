@@ -52,9 +52,9 @@ class Scan2DTest : FreeSpec() {
 
                 val targetPointCloud = table(
                     headers("Point"),
-                    row(Point(0.0, 1.0, 54)),
-                    row(Point(1.0, 1.0, 58)),
-                    row(Point(1.0, 0.0, 62))
+                    row(Point(1.0, 0.0, 54)),
+                    row(Point(1.0, -1.0, 58)),
+                    row(Point(0.0, -1.0, 62))
                 )
 
                 "should be computed" {
@@ -98,9 +98,9 @@ class Scan2DTest : FreeSpec() {
 
                 val targetPointCloud = table(
                     headers("Point"),
-                    row(Point(0.0, 1.0, 54)),
-                    row(Point(1.0, 1.0, 58)),
-                    row(Point(1.0, 0.0, 62))
+                    row(Point(1.0, 0.0, 54)),
+                    row(Point(1.0, -1.0, 58)),
+                    row(Point(0.0, -1.0, 62))
                 )
 
                 "should be computed" {

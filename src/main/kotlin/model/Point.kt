@@ -1,9 +1,14 @@
 package model
 
-import mu.KotlinLogging
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 data class Point(val x: Double, val y: Double, val quality: Int) {
+    constructor(rotation: Pair<Double, Double>, quality: Int) : this(
+        rotation, 1.0, quality
+    )
+
     constructor(rotation: Pair<Double, Double>, length: Double, quality: Int) : this(
         rotation.first * length,
         rotation.second * length,
@@ -30,5 +35,12 @@ data class Point(val x: Double, val y: Double, val quality: Int) {
         if (other.y - 1e-8 > y || y > other.y + 1e-8) return false
 
         return true
+    }
+
+    companion object {
+        fun fromPolarCoordinates(distance: Double, angle: Double, quality: Int): Point {
+            val rad = Math.toRadians(angle)
+            return Point(distance * cos(rad), distance * sin(rad), quality)
+        }
     }
 }

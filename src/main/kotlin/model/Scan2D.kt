@@ -1,8 +1,12 @@
+@file:JvmName("Utils")
+@file:JvmMultifileClass
+
 package model
 
 import io.Reader
 import mu.KotlinLogging
 import java.io.File
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -13,43 +17,40 @@ val qualityKey = "quality"
 
 private val logger by lazy { KotlinLogging.logger {} }
 
+inline fun <T> Sequence<T>.filterAndCount(count: AtomicInteger, crossinline predicate: (T) -> Boolean): Sequence<T> =
+    this.filter {
+        if (predicate(it))
+            true
+        else {
+            count.incrementAndGet()
+            false
+        }
+    }
+
 /**
  * Expects a list of angle_since_start, length, quality
  */
 class Scan2D(val rawData: List<ScanData>, private val scanner: Scanner) {
     val pointCloud = calculatePointCloud(rawData, scanner)
 
-    fun rotate(angle: Double): List<Point> = pointCloud.map {
-        Point(rotateVec(Pair(it.x, it.y), angle), 1.0, it.quality)
-    }
-
     private fun calculatePointCloud(rawData: List<ScanData>, scanner: Scanner): List<Point> {
         logger.debug { "Calculating point cloud from ${rawData.size} data points." }
-        var countNull = 0
-        var countQuality = 0
+        val countNull = AtomicInteger(0)
+        val countQuality = AtomicInteger(0)
 
         val pointCloud = (if (scanner.incremental) toTotalStepSizes(rawData) else rawData)
-            .filter {
-                if (it.distance !== null && it.quality !== null) {
-                    countNull++
-                    true
-                } else false
-            }
-            .filter {
-                if (it.quality!! < scanner.qualityMax) {
-                    countQuality++
-                    true
-                } else false
-            }
+            .asSequence()
+            .filterAndCount(countNull) { it.distance !== null && it.quality !== null }
+            .filterAndCount(countQuality) { it.quality!! < scanner.qualityMax }
             .map {
                 val clockwise = if (scanner.clockwise) -1 else 1
-                Point(
-                    rotateFromStart(it.stepSize * scanner.stepAngle * clockwise),
+                Point.fromPolarCoordinates(
                     it.distance!!,
+                    it.stepSize * scanner.stepAngle * clockwise,
                     it.quality!!
                 )
-            }
-        logger.trace { "skipped $countNull points because of NaN, $countQuality points because of quality above ${scanner.qualityMax}." }
+            }.toList()
+        logger.info { "skipped points: $countNull [NaN], $countQuality [quality > ${scanner.qualityMax}]." }
         return pointCloud
     }
 
@@ -63,14 +64,17 @@ class Scan2D(val rawData: List<ScanData>, private val scanner: Scanner) {
             }
     }
 
+    fun rotate(angle: Double): List<Point> =
+        pointCloud.map {
+            Point(rotateVec(Pair(it.x, it.y), angle), 1.0, it.quality)
+        }
+
     private fun rotateVec(vec: Pair<Double, Double>, angle: Double): Pair<Double, Double> {
-        val radians = Math.toRadians(angle)
-        val x2 = cos(radians) * vec.first - sin(radians) * vec.second
-        val y2 = sin(radians) * vec.first + cos(radians) * vec.second
+        val rad = Math.toRadians(angle)
+        val x2 = cos(rad) * vec.first - sin(rad) * vec.second
+        val y2 = sin(rad) * vec.first + cos(rad) * vec.second
         return Pair(x2, y2)
     }
-
-    private fun rotateFromStart(angle: Double): Pair<Double, Double> = rotateVec(Pair(0.0, 1.0), angle)
 
     fun toTSV(): String {
         val sb = StringBuilder()
@@ -85,9 +89,7 @@ class Scan2D(val rawData: List<ScanData>, private val scanner: Scanner) {
         val stepSize: Double,
         val distance: Double?,
         val quality: Int?
-    ) {
-
-    }
+    )
 
     companion object {
         fun fromTSV(tsv: File, scanner: Scanner): Scan2D {
@@ -100,7 +102,7 @@ class Scan2D(val rawData: List<ScanData>, private val scanner: Scanner) {
             return fromData(Reader.fromTSV(tsv), scanner)
         }
 
-        fun fromData(data: List<Map<String, String>>, scanner: Scanner): Scan2D {
+        private fun fromData(data: List<Map<String, String>>, scanner: Scanner): Scan2D {
             val rawData = data
                 .mapIndexed { index, it ->
                     ScanData(
