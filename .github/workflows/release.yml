@@ -5,7 +5,7 @@ on:
       - master
       - dev
 jobs:
-  release:
+  Release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,10 +23,8 @@ jobs:
         with:
           node-version: 12
       - name: Install semantic-release
-        run: npm i -g semantic-release
-      - name: Print releaserc.json
-        run: cat .releaserc.json
+        run: npm i -g semantic-release@beta @semantic-release/changelog
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release --debug
+        run: npx semantic-release
