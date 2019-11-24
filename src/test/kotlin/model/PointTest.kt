@@ -1,7 +1,9 @@
 package model;
 
+import io.kotlintest.data.suspend.forall
 import io.kotlintest.matchers.doubles.plusOrMinus
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.tables.*
 import kotlin.math.pow
@@ -73,6 +75,29 @@ internal class PointTest : FreeSpec({
             val point = Point(3.0, 2.0, 1)
             val targetString = "3.0\t2.0\t1"
             point.toTSVString() shouldBe targetString
+        }
+
+        "equals" {
+            val x = 0.5
+            val y = 2.3
+            val quality = 50
+            val point = Point(x, y, quality)
+            forall(
+                row(point),
+                row(Point(x + 1e-8, y + 1e-8, quality)),
+                row(Point(x, y, quality))
+            ) { targetPoint ->
+                point shouldBe targetPoint
+            }
+
+            forall(
+                row(Point(x, y, quality + 1)),
+                row(Point(x + 2e-8, y, quality)),
+                row(Point(x, y + 2e-8, quality)),
+                row(2.0)
+                ) {targetPoint ->
+                point shouldNotBe targetPoint
+            }
         }
     }
 
