@@ -22,9 +22,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
-      - name: Install dependencies
+      - name: Install semantic-release
         run: npm i -g semantic-release
+      - name: Print releaserc.json
+        run: cat .releaserc.json
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: npx semantic-release --debug
