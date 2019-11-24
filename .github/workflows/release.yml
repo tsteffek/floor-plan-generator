@@ -6,7 +6,7 @@ on:
       - dev
       - fix-semantic-release
 jobs:
-  Setup Java:
+  Setup-Java:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,7 +19,7 @@ jobs:
         uses: eskatos/gradle-command-action@v1
         with:
           arguments: distZip
-  Setup Node:
+  Setup-Node:
     runs-on: ubuntu-latest
     steps:
       - name: Setup Node.js
@@ -30,7 +30,7 @@ jobs:
         run: npm i -g semantic-release @semantic-release/changelog
   Release:
     runs-on: ubuntu-latest
-    needs: ["Setup Node", "Setup Java"]
+    needs: [Setup-Node, Setup-Java]
     steps:
       - run: ls
       - name: Print .releaserc.json
