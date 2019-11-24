@@ -4,6 +4,7 @@ on:
     branches:
       - master
       - dev
+      - beta
       - fix-semantic-release
 jobs:
   Release:
