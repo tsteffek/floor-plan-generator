@@ -1,10 +1,8 @@
-```
-<type>(<scope>): <subject>
-<BLANK LINE>
-<body>
-<BLANK LINE>
-<footer>
-```
+\<type>(\<scope>): \<subject>
+
+\<body>
+
+\<footer>
 
 ## Type
 Must be one of the following:

@@ -17,13 +17,13 @@ jobs:
       - name: Build distribution
         uses: eskatos/gradle-command-action@v1
         with:
-          arguments: distZip
+          arguments: build
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 12
       - name: Install semantic-release
-        run: npm i -g semantic-release@beta @semantic-release/changelog
+        run: npm i -g semantic-release@beta @semantic-release/changelog @semantic-release/exec
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
