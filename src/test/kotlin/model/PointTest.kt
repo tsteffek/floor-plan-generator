@@ -1,22 +1,17 @@
 package model;
 
-import io.kotlintest.*
-import io.kotlintest.matchers.collections.shouldContain
+import io.kotlintest.data.suspend.forall
 import io.kotlintest.matchers.doubles.plusOrMinus
-import io.kotlintest.specs.StringSpec
+import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotBe
+import io.kotlintest.specs.FreeSpec
 import io.kotlintest.tables.*
-import mu.KotlinLogging
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-private val logger by lazy { KotlinLogging.logger {} }
-
-class PointTest : StringSpec() {
-    private lateinit var pointsAndLengths: Table2<Point, Double>
-
-    override fun beforeTest(testCase: TestCase) {
-        super.beforeTest(testCase)
-        pointsAndLengths = table(
+internal class PointTest : FreeSpec({
+    "Point" - {
+        val pointsAndLengths = table(
             headers("point", "length"),
             row(
                 Point(0.0, 1.0, 0),
@@ -27,35 +22,112 @@ class PointTest : StringSpec() {
                 sqrt(2.0)
             ),
             row(
-                Point(Pair(0.0, 1.0), 1.0, 0),
-                1.0
-            ),
-            row(
-                Point(Pair(0.0, 1.0), 2.0, 0),
-                2.0
-            ),
-            row(
-                Point(Pair(1.0, 1.0), 2.0, 0),
+                Point(2.0, 2.0, 0),
                 2 * sqrt(2.0)
             )
         )
-    }
 
-    init {
-        "point length" {
+        "getLength" {
             forAll(
                 pointsAndLengths
             ) { point, length ->
                 point.getLength() shouldBe length
             }
         }
-        "normalizedVec" {
+        "normalizedDirection" {
             forAll(
                 pointsAndLengths
             ) { point, _ ->
-                val vec = point.normalizedVec()
+                val vec = point.normalizedDirection()
                 sqrt(vec.first.pow(2) + vec.second.pow(2)) shouldBe (1.0 plusOrMinus 1e-5)
             }
         }
+
+        val pointsAndRotations = table(
+            headers("point", "rotation", "point after rotation"),
+            row(
+                Point(0.0, 1.0, 0),
+                -45.0,
+                Point(0.7071067811865475, 0.7071067811865475, 0)
+            ),
+            row(
+                Point(1.0, 1.0, 0),
+                45.0,
+                Point(0.0, sqrt(2.0), 0)
+            ),
+            row(
+                Point(2.0, 2.0, 0),
+                180.0,
+                Point(-2.0, -2.0, 0)
+            )
+        )
+
+        "rotateBy" {
+            forAll(
+                pointsAndRotations
+            ) { point, rotation, targetPoint ->
+                val rotatedPoint = point.rotateBy(rotation)
+                rotatedPoint shouldBe targetPoint
+            }
+        }
+
+        "toTSV" {
+            val point = Point(3.0, 2.0, 1)
+            val targetString = "3.0\t2.0\t1"
+            point.toTSVString() shouldBe targetString
+        }
+
+        "equals" {
+            val x = 0.5
+            val y = 2.3
+            val quality = 50
+            val point = Point(x, y, quality)
+            forall(
+                row(point),
+                row(Point(x + 1e-8, y + 1e-8, quality)),
+                row(Point(x, y, quality))
+            ) { targetPoint ->
+                point shouldBe targetPoint
+            }
+
+            forall(
+                row(Point(x, y, quality + 1)),
+                row(Point(x + 2e-8, y, quality)),
+                row(Point(x, y + 2e-8, quality)),
+                row(2.0)
+                ) {targetPoint ->
+                point shouldNotBe targetPoint
+            }
+        }
     }
-}
+
+    "companion object" - {
+        val pointsAndLengths = table(
+            headers("polar distance", "polar angle", "quality", "point in cartesian"),
+            row(
+                1.0, 90.0, 0,
+                Point(0.0, 1.0, 0)
+            ),
+            row(
+                sqrt(2.0), 45.0, 0,
+                Point(1.0, 1.0, 0)
+
+            ),
+            row(
+                2 * sqrt(2.0), 45.0, 0,
+                Point(2.0, 2.0, 0)
+            ),
+            row(
+                2 * sqrt(2.0), -135.0, 0,
+                Point(-2.0, -2.0, 0)
+            )
+        )
+
+        "fromPolarCoordinates" {
+            forAll(pointsAndLengths) { distance, angle, quality, targetPoint ->
+                val point = Point.fromPolarCoordinates(distance, angle, quality)
+                point shouldBe targetPoint
+            }
+        }
+    }
+})

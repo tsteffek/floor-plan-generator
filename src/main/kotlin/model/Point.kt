@@ -1,23 +1,26 @@
 package model
 
-import mu.KotlinLogging
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 data class Point(val x: Double, val y: Double, val quality: Int) {
-    constructor(rotation: Pair<Double, Double>, length: Double, quality: Int) : this(
-        rotation.first * length,
-        rotation.second * length,
-        quality
-    )
 
     fun getLength(): Double = sqrt(x * x + y * y)
 
-    fun normalizedVec(): Pair<Double, Double> {
+    fun normalizedDirection(): Pair<Double, Double> {
         val length = getLength()
         return Pair(x / length, y / length)
     }
 
-    fun toTSVString() = "$x\t$y"
+    fun rotateBy(angle: Double): Point {
+        val rad = Math.toRadians(angle)
+        val x2 = cos(rad) * x - sin(rad) * y
+        val y2 = sin(rad) * x + cos(rad) * y
+        return Point(x2, y2, quality)
+    }
+
+    fun toTSVString() = "$x\t$y\t$quality"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -30,5 +33,12 @@ data class Point(val x: Double, val y: Double, val quality: Int) {
         if (other.y - 1e-8 > y || y > other.y + 1e-8) return false
 
         return true
+    }
+
+    companion object {
+        fun fromPolarCoordinates(distance: Double, angle: Double, quality: Int): Point {
+            val rad = Math.toRadians(angle)
+            return Point(distance * cos(rad), distance * sin(rad), quality)
+        }
     }
 }
