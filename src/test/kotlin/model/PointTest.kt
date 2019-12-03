@@ -1,15 +1,32 @@
-package model;
+package model
 
 import io.kotlintest.data.suspend.forall
 import io.kotlintest.matchers.doubles.plusOrMinus
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.FreeSpec
-import io.kotlintest.tables.*
+import io.kotlintest.tables.forAll
+import io.kotlintest.tables.headers
+import io.kotlintest.tables.row
+import io.kotlintest.tables.table
+import model.geometry.Point
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 internal class PointTest : FreeSpec({
+
+    "distanceBetween" {
+        val pointA = Point(0.0,0.0,0)
+        val pointB = Point(-2.0,-2.0, 0)
+        forall(
+            row(Point(1.0,1.0,0), sqrt(2.0), 3* sqrt(2.0)),
+            row(Point(-1.0,1.0,0), sqrt(2.0), 3.1623)
+        ) { otherPoint, distanceToA, distanceToB ->
+            pointA.distanceTo(otherPoint) shouldBe (distanceToA plusOrMinus 1e-5)
+            pointB.distanceTo(otherPoint) shouldBe (distanceToB plusOrMinus 1e-5)
+        }
+    }
+
     "Point" - {
         val pointsAndLengths = table(
             headers("point", "length"),
@@ -27,13 +44,6 @@ internal class PointTest : FreeSpec({
             )
         )
 
-        "getLength" {
-            forAll(
-                pointsAndLengths
-            ) { point, length ->
-                point.getLength() shouldBe length
-            }
-        }
         "normalizedDirection" {
             forAll(
                 pointsAndLengths
@@ -125,7 +135,7 @@ internal class PointTest : FreeSpec({
 
         "fromPolarCoordinates" {
             forAll(pointsAndLengths) { distance, angle, quality, targetPoint ->
-                val point = Point.fromPolarCoordinates(distance, angle, quality)
+                val point = Point(distance, angle, quality)
                 point shouldBe targetPoint
             }
         }
