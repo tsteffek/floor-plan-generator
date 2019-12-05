@@ -7,9 +7,10 @@ fun distanceOriginLineToPoint(l: Line, p: Point) =
     distanceOriginLineToPoint(l.angle, p)
 
 fun distanceOriginLineToPoint(angle: Double, p: Point): Double {
+    val maxPossibleAngle = 90
     val angleBetween = angle - p.angle
-    return if (abs(angleBetween) < 90)
-        p.distance * cos(Math.toRadians(angle - p.angle))
+    return if (abs(angleBetween) < maxPossibleAngle)
+        p.distance * cos(Math.toRadians(angleBetween))
     else
         p.distance
 }

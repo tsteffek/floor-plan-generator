@@ -15,6 +15,16 @@ import java.io.File
 fun main(args: Array<String>) = CLI().main(args)
 
 class CLI : CliktCommand() {
+
+    companion object {
+        private const val DEFAULT_ROTATION = 0.0
+        private const val DEFAULT_DIAGRAM = true
+        private const val DEFAULT_MAX_QUALITY = 100
+        private const val DEFAULT_INCREMENTAL = true
+        private const val DEFAULT_STEP_ANGLE = 0.018
+        private const val DEFAULT_CLOCKWISE = true
+    }
+
     /* Scan options */
     private val scanPath by option(
         "-p",
@@ -30,12 +40,12 @@ class CLI : CliktCommand() {
         "-s",
         "--show",
         help = "Whether a diagram will be shown/saved [show]"
-    ).flag("-d", "--dont-show", default = true)
+    ).flag("-d", "--dont-show", default = DEFAULT_DIAGRAM)
     private val rotation by option(
         "-r",
         "--rotate",
         help = "Rotates the result by amount of degrees [0.0]"
-    ).double().default(0.0)
+    ).double().default(DEFAULT_ROTATION)
 
     /* Scanner options */
     private val scannerId by option(
@@ -47,22 +57,22 @@ class CLI : CliktCommand() {
         "-q",
         "--max-quality",
         help = "Maximum of quality accepted [100]"
-    ).int().default(100)
+    ).int().default(DEFAULT_MAX_QUALITY)
     private val incremental by option(
         "-i",
         "--incremental",
         help = "Whether the scanner works incrementally or with total values [incremental]"
-    ).flag("-t", "--total", default = true)
+    ).flag("-t", "--total", default = DEFAULT_INCREMENTAL)
     private val stepAngle by option(
         "-a",
         "--angle",
         help = "The angle the scanner rotates per step [0.018]"
-    ).double().default(0.018)
+    ).double().default(DEFAULT_STEP_ANGLE)
     private val clockwise by option(
         "-c",
         "--clockwise",
         help = "Whether the scanner rotates clockwise or counterclockwise [clockwise]"
-    ).flag("--counterclockwise", default = true)
+    ).flag("--counterclockwise", default = DEFAULT_CLOCKWISE)
 
     override fun run() {
         val file = File(scanPath)
