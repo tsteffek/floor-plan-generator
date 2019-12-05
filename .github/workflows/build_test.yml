@@ -23,7 +23,13 @@ jobs:
       - uses: eskatos/gradle-command-action@v1
         with:
           arguments: jacocoTestReport
-      - name: codecov
+      - name: upload codecov report
         uses: codecov/codecov-action@v1
         with:
-            token: ${{ secrets.CODECOV_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: download codacy-coverage-reporter
+        run: curl -Ls -o codacy-coverage-reporter "$(curl -Ls https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets | map({name, browser_download_url} | select(.name | contains("codacy-coverage-reporter-linux"))) | .[0].browser_download_url')"
+      - name: upload codacy report
+        run: chmod +x codacy-coverage-reporter && ./codacy-coverage-reporter report -l Java -r build/reports/jacoco/test/jacocoTestReport.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
