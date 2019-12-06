@@ -11,9 +11,6 @@ import java.util.concurrent.atomic.AtomicInteger
 
 private val logger by lazy { KotlinLogging.logger {} }
 
-/**
- * Expects a list of angle_since_start, length, quality
- */
 class Scan2D(val pointCloud: List<Point>, private val scanner: Scanner) {
 
     fun rotateBy(angle: Double): List<Point> =
@@ -48,14 +45,14 @@ class Scan2D(val pointCloud: List<Point>, private val scanner: Scanner) {
 
         private fun fromMap(map: List<Map<String, String>>, scanner: Scanner): Scan2D {
             var parsedData = map
-                .mapIndexed { index, it ->
+                .mapIndexed { index, dataObject ->
                     ScanData(
-                        it[scanner.idKey]?.toInt()
+                        dataObject[scanner.idKey]?.toInt()
                             ?: error("${scanner.idKey} missing in CSV line ${index + 1}"),
-                        it[scanner.stepSizeKey]?.toDouble()
+                        dataObject[scanner.stepSizeKey]?.toDouble()
                             ?: error("${scanner.stepSizeKey} missing in CSV line ${index + 1}"),
-                        it[scanner.distanceKey]?.toDoubleOrNull(),
-                        it[scanner.qualityKey]?.toIntOrNull()
+                        dataObject[scanner.distanceKey]?.toDoubleOrNull(),
+                        dataObject[scanner.qualityKey]?.toIntOrNull()
                     )
                 }
 

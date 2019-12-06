@@ -10,16 +10,18 @@ class NeighborhoodGraph<T : GeometricObject<T>>(
 ) {
     fun getObjects(): Set<T> = map.keys
 
-    fun getNeighbors(t: T): Set<T> {
-        return map.getValue(t)
-    }
+    fun getNeighbors(t: T): Set<T> = map.getValue(t)
 
     companion object {
-        fun <T : GeometricObject<T>> usingBruteForce(objects: List<T>): NeighborhoodGraph<T> {
+        fun <T : GeometricObject<T>> usingBruteForce(
+            objects: List<T>,
+            closestNeighbors: Int = 2
+        ): NeighborhoodGraph<T> {
             val objectToList = objects.associateWith {
-                objects
+                objects.asSequence()
                     .sortedBy { other -> it.distanceTo(other) }
-                    .take(3)
+                    .minus(it)
+                    .take(closestNeighbors)
                     .filter { other -> it !== other }
                     .toSet()
             }
@@ -27,16 +29,12 @@ class NeighborhoodGraph<T : GeometricObject<T>>(
             return NeighborhoodGraph(filterOutlier(objectToList))
         }
 
-        private fun <T> filterOutlier(map: Map<T, Set<T>>): Map<T, Set<T>> {
-            val filtered = map.filter { (point, neighbors) ->
+        private fun <T> filterOutlier(map: Map<T, Set<T>>): Map<T, Set<T>> =
+            map.filter { (point, neighbors) ->
                 neighbors.all { neighbor -> map.getValue(neighbor).contains(point) }
             }
-            return filtered
-        }
 
         fun fromPolarPoints(points: List<Point>): NeighborhoodGraph<Point> {
-//            val pointToList = points
-//                .associateWith { mutableSetOf<Point>() }
             val sortedPoints = points.sortedBy { it.angle }
 
             val pointToList =
@@ -46,12 +44,6 @@ class NeighborhoodGraph<T : GeometricObject<T>>(
                         Pair(point, computeClosest(index, sortedPoints))
                     }
 
-//            for (index in sortedPoints.indices) {
-//                val it = sortedPoints[index]
-//                val nextClosest = computeClosest(index, sortedPoints)
-//                pointToList[it]?.add(nextClosest)
-//                pointToList[nextClosest]?.add(it)
-//            }
             return NeighborhoodGraph(filterOutlier(pointToList))
         }
 
@@ -68,9 +60,10 @@ class NeighborhoodGraph<T : GeometricObject<T>>(
                     it, null, Double.POSITIVE_INFINITY, backwardIterator
                 )!!
             )
+
         }
 
-        private fun computeNextClosestRec(
+        private tailrec fun computeNextClosestRec(
             it: Point,
             closestPoint: Point?,
             distanceToClosest: Double,
