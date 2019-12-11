@@ -7,7 +7,7 @@ import io.kotlintest.specs.FreeSpec
 import io.kotlintest.tables.row
 import io.mockk.every
 import io.mockk.mockkStatic
-import io.mockk.verify
+import io.mockk.verifyAll
 import math.distanceLineToPoint
 import math.distancePointToPoint
 import model.geometry.Line
@@ -15,6 +15,16 @@ import model.geometry.Point
 
 internal class PointTest : FreeSpec({
 
+    "constructors are all equal" {
+        val point = Point(1.0, 2.0)
+        forall(
+            row(Point(1, 2.0)),
+            row(Point(1.0, 2)),
+            row(Point(1, 2))
+        ) {
+            point shouldBe it
+        }
+    }
 
     "distanceTo" {
         val p = Point(1, 2)
@@ -28,8 +38,10 @@ internal class PointTest : FreeSpec({
         p.distanceTo(otherP) shouldBe 13.0
         p.distanceTo(line) shouldBe 23.0
 
-        verify { distanceLineToPoint(line, p) }
-        verify { distancePointToPoint(otherP, p) }
+        verifyAll {
+            distanceLineToPoint(line, p)
+            distancePointToPoint(otherP, p)
+        }
     }
 
     "toTSV" {

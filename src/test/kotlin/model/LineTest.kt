@@ -14,6 +14,17 @@ import model.geometry.Point
 
 internal class LineTest : FreeSpec({
 
+    "constructors are all equal" {
+        val line = Line(1.0, 2.0)
+        forall(
+            row(Line(1, 2.0)),
+            row(Line(1.0, 2)),
+            row(Line(1, 2))
+        ) {
+            line shouldBe it
+        }
+    }
+
     "distanceTo" - {
         val l = Line(1, 2)
         val point = Point(3, 4)
@@ -34,6 +45,12 @@ internal class LineTest : FreeSpec({
                 l.distanceTo(parallelLine)
             }
         }
+    }
+
+    "toTSV" {
+        val line = Line(2.0, 3.0)
+        val targetString = "2.0\t3.0"
+        line.toTSVString() shouldBe targetString
     }
 
     "companion object" - {
