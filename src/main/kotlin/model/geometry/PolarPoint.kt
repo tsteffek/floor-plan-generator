@@ -1,6 +1,5 @@
 package model.geometry
 
-import maths.distancePointToPoint
 import kotlin.math.cos
 import kotlin.math.sin
 

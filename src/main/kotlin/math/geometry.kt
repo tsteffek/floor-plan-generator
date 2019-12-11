@@ -1,9 +1,15 @@
-package maths
+package math
 
-import model.geometry.*
+import model.geometry.Line
+import model.geometry.Point
+import model.geometry.PolarPoint
+import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sqrt
+
+const val PIHALF = PI / 2
+const val PRECISION = 1e-8
 
 fun lengthOf(x: Double, y: Double): Double =
     sqrt(x * x + y * y)
@@ -13,7 +19,7 @@ fun distancePointToPoint(a: Point, b: Point) =
 
 fun distanceOriginLineToPoint(angle: Double, p: PolarPoint): Double {
     val angleBetween = angle - p.angle
-    return if (abs(angleBetween) < piHalf)
+    return if (abs(angleBetween) < PIHALF)
         p.distance * cos(angleBetween)
     else
         p.distance

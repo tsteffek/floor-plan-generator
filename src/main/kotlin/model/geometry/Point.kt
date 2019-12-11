@@ -1,15 +1,10 @@
 package model.geometry
 
-import maths.distanceLineToPoint
-import maths.distancePointToPoint
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
+import math.PRECISION
+import math.distanceLineToPoint
+import math.distancePointToPoint
 
-open class Point(
-    val x: Double,
-    val y: Double
-) : GeometricObject {
+open class Point(val x: Double, val y: Double) : GeometricObject {
 
     constructor(x: Int, y: Double) : this(x.toDouble(), y)
     constructor(x: Double, y: Int) : this(x, y.toDouble())
@@ -35,6 +30,12 @@ open class Point(
         if (other.y - PRECISION > y || y > other.y + PRECISION) return false
 
         return true
+    }
+
+    override fun hashCode(): Int {
+        var result = x.hashCode()
+        result = 31 * result + y.hashCode()
+        return result
     }
 
     override fun toString(): String =

@@ -1,8 +1,9 @@
 package model
 
-import maths.distanceOriginLineToPoint
-import maths.distancePointToPoint
-import model.geometry.*
+import math.distanceOriginLineToPoint
+import math.distancePointToPoint
+import model.geometry.GeometricObject
+import model.geometry.PolarPoint
 
 class NeighborhoodGraph<T : GeometricObject>(
     private val map: Map<T, Set<T>>

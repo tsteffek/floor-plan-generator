@@ -1,9 +1,7 @@
 package model.geometry
 
-import maths.distanceLineToPoint
-import kotlin.math.*
-
-const val piHalf = PI / 2
+import math.PRECISION
+import math.distanceLineToPoint
 
 data class Line(val slope: Double, val intercept: Double) : GeometricObject {
 
@@ -14,7 +12,9 @@ data class Line(val slope: Double, val intercept: Double) : GeometricObject {
     override fun distanceTo(other: GeometricObject): Double =
         when (other) {
             is Point -> distanceLineToPoint(this, other)
-            is Line -> 0.0
+            is Line ->
+                if (other.slope != slope) 0.0
+                else throw NotImplementedError()
             else -> throw NotImplementedError()
         }
 
