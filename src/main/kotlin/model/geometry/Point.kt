@@ -11,18 +11,16 @@ fun lengthOf(x: Double, y: Double): Double =
     sqrt(x * x + y * y)
 
 class Point(
-    val distance: Double,
     val angle: Double,
+    val distance: Double,
     val quality: Int
 ) : GeometricObject<Point> {
-    val x: Double
-    val y: Double
+    val x: Double = distance * cos(angle)
+    val y: Double = distance * sin(angle)
 
-    init {
-        val rad = Math.toRadians(angle)
-        x = distance * cos(rad)
-        y = distance * sin(rad)
-    }
+    constructor(angle: Int, distance: Double, quality: Int): this(angle.toDouble(), distance, quality)
+    constructor(angle: Double, distance: Int, quality: Int): this(angle, distance.toDouble(), quality)
+    constructor(angle: Int, distance: Int, quality: Int): this(angle.toDouble(), distance.toDouble(), quality)
 
     override fun distanceTo(other: Point): Double =
         distancePointToPoint(this, other)
@@ -33,7 +31,7 @@ class Point(
     }
 
     fun rotateBy(angle: Double): Point =
-        Point(distance, this.angle + angle, quality)
+        Point(this.angle + angle, distance, quality)
 
     override fun toTSVString(): String =
         "$distance\t$angle\t$quality"
@@ -51,6 +49,7 @@ class Point(
         return true
     }
 
+
     override fun hashCode(): Int {
         var result = distance.hashCode()
         result = 31 * result + angle.hashCode()
@@ -60,7 +59,6 @@ class Point(
         return result
     }
 
-    companion object {
-        private const val PRECISION = 1e-8
-    }
+    override fun toString(): String =
+        "Point(distance=$distance, angle=$angle, quality=$quality)"
 }

@@ -3,7 +3,6 @@ package model
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.asClue
 import io.kotlintest.matchers.collections.shouldContain
-import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.tables.*
@@ -33,9 +32,9 @@ class Scan2DTest : FreeSpec({
 
                 val targetPointCloud = table(
                     headers("Point"),
-                    row(Point(1.0, 0.0, 1)),
-                    row(Point(sqrt(2.0), 45.0, 2)),
-                    row(Point(1.0, 90.0, 3))
+                    row(Point(0.0, 1.0, 1)),
+                    row(Point(Math.toRadians(45.0), sqrt(2.0), 2)),
+                    row(Point(Math.toRadians(90.0), 1.0, 3))
                 )
 
                 listOf(
@@ -75,9 +74,9 @@ class Scan2DTest : FreeSpec({
 
                 val targetPointCloud = table(
                     headers("Point"),
-                    row(Point(1.0, 0.0, 1)),
-                    row(Point(sqrt(2.0), 45.0, 2)),
-                    row(Point(1.0, 90.0, 3))
+                    row(Point(0.0, 1.0, 1)),
+                    row(Point(Math.toRadians(45.0), sqrt(2.0), 2)),
+                    row(Point(Math.toRadians(90.0), 1.0, 3))
                 )
 
                 listOf(

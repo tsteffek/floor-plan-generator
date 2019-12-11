@@ -3,13 +3,26 @@
 
 package model
 
-import io.readFromTSV
+import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import model.geometry.Point
 import mu.KotlinLogging
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
 private val logger by lazy { KotlinLogging.logger {} }
+
+private fun getTSVReader() = csvReader {
+    charset = "UTF-8"
+    quoteChar = '"'
+    delimiter = '\t'
+    escapeChar = '\\'
+}
+
+fun readFromTSV(tsv: File): List<Map<String, String>> =
+    getTSVReader().readAllWithHeader(tsv)
+
+fun readFromTSV(tsv: String): List<Map<String, String>> =
+    getTSVReader().readAllWithHeader(tsv)
 
 class Scan2D(val pointCloud: List<Point>, private val scanner: Scanner) {
 
@@ -76,11 +89,8 @@ class Scan2D(val pointCloud: List<Point>, private val scanner: Scanner) {
                 .filterAndCount(countQuality) { it.quality!! < scanner.qualityMax }
                 .map {
                     val clockwise = if (scanner.clockwise) -1 else 1
-                    Point(
-                        it.distance!!,
-                        it.amountOfSteps * scanner.stepAngle * clockwise,
-                        it.quality!!
-                    )
+                    val angleInRad = Math.toRadians(it.amountOfSteps * scanner.stepAngle * clockwise)
+                    Point(angleInRad, it.distance!!, it.quality!!)
                 }.toList()
 
             logger.info {

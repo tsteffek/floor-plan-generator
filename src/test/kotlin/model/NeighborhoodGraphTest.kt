@@ -14,12 +14,12 @@ private val logger by lazy { KotlinLogging.logger {} }
 class NeighborhoodGraphTest : FreeSpec({
 
     "companion object" - {
-        val a = Point(1.0, 0.0, 0)
-        val b = Point(1.0, -90.0, 4)
-        val c = Point(1.0, 90.0, 2)
-        val d = Point(0.9, 170.0, 3)
-        val outlier = Point(50.0, 45.0, 1)
-        val unknownPoint = Point(10.0, 90.0, 500)
+        val a = Point(0.0, 1.0, 0)
+        val b = Point(Math.toRadians(-90.0), 1.0, 4)
+        val c = Point(Math.toRadians(90.0), 1.0, 2)
+        val d = Point(Math.toRadians(170.0), 0.9, 3)
+        val outlier = Point(Math.toRadians(45.0), 50.0, 1)
+        val unknownPoint = Point(Math.toRadians(90.0), 10.0, 500)
 
         val points = listOf(a, outlier, b, c, d)
         val inlier = listOf(a, b, c, d)
