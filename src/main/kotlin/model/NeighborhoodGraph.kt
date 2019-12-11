@@ -1,11 +1,10 @@
 package model
 
-import model.geometry.GeometricObject
-import model.geometry.Point
-import model.geometry.distanceOriginLineToPoint
-import model.geometry.distancePointToPoint
+import maths.distanceOriginLineToPoint
+import maths.distancePointToPoint
+import model.geometry.*
 
-class NeighborhoodGraph<T : GeometricObject<T>>(
+class NeighborhoodGraph<T : GeometricObject>(
     private val map: Map<T, Set<T>>
 ) {
     fun getObjects(): Set<T> = map.keys
@@ -13,7 +12,7 @@ class NeighborhoodGraph<T : GeometricObject<T>>(
     fun getNeighbors(t: T): Set<T> = map.getValue(t)
 
     companion object {
-        fun <T : GeometricObject<T>> usingBruteForce(
+        fun <T : GeometricObject> usingBruteForce(
             objects: List<T>,
             closestNeighbors: Int = 2
         ): NeighborhoodGraph<T> {
@@ -34,7 +33,7 @@ class NeighborhoodGraph<T : GeometricObject<T>>(
                 neighbors.all { neighbor -> map.getValue(neighbor).contains(point) }
             }
 
-        fun fromPolarPoints(points: List<Point>): NeighborhoodGraph<Point> {
+        fun fromPolarPoints(points: List<PolarPoint>): NeighborhoodGraph<PolarPoint> {
             val sortedPoints = points.sortedBy { it.angle }
 
             val pointToList =
@@ -47,7 +46,7 @@ class NeighborhoodGraph<T : GeometricObject<T>>(
             return NeighborhoodGraph(filterOutlier(pointToList))
         }
 
-        private fun computeClosest(index: Int, points: List<Point>): Set<Point> {
+        private fun computeClosest(index: Int, points: List<PolarPoint>): Set<PolarPoint> {
             val it = points[index % points.size]
             val halfSize = (points.size * 0.5).toInt()
             val forwardIterator = points.asCyclicSequence(index + 1, index + halfSize).iterator()
@@ -64,11 +63,11 @@ class NeighborhoodGraph<T : GeometricObject<T>>(
         }
 
         private tailrec fun computeNextClosestRec(
-            it: Point,
-            closestPoint: Point?,
+            it: PolarPoint,
+            closestPoint: PolarPoint?,
             distanceToClosest: Double,
-            iterator: Iterator<Point>
-        ): Point? {
+            iterator: Iterator<PolarPoint>
+        ): PolarPoint? {
             if (!iterator.hasNext()) return closestPoint
             val nextPoint = iterator.next()
 

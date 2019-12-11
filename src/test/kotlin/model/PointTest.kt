@@ -9,19 +9,19 @@ import io.kotlintest.tables.forAll
 import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
 import io.kotlintest.tables.table
-import model.geometry.Point
+import model.geometry.PolarPoint
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-internal class PointTest : FreeSpec({
+internal class PolarPointTest : FreeSpec({
 
     "distancePointToPoint" {
-        val pointA = Point(Math.toRadians(90.0), 0.0, 0)
-        val pointB = Point(Math.toRadians(225.0), 2 * sqrt(2.0), 0)
+        val pointA = PolarPoint(Math.toRadians(90.0), 0.0, 0)
+        val pointB = PolarPoint(Math.toRadians(225.0), 2 * sqrt(2.0), 0)
         forall(
-            row(Point(Math.toRadians(90.0), 2.0, 0), 2.0, 4.4721),
-            row(Point(Math.toRadians(45.0), sqrt(2.0), 0), sqrt(2.0), 3 * sqrt(2.0)),
-            row(Point(Math.toRadians(135.0), sqrt(2.0), 0), sqrt(2.0), 3.1623)
+            row(PolarPoint(Math.toRadians(90.0), 2.0, 0), 2.0, 4.4721),
+            row(PolarPoint(Math.toRadians(45.0), sqrt(2.0), 0), sqrt(2.0), 3 * sqrt(2.0)),
+            row(PolarPoint(Math.toRadians(135.0), sqrt(2.0), 0), sqrt(2.0), 3.1623)
         ) { otherPoint, distanceToA, distanceToB ->
             pointA.distanceTo(otherPoint) shouldBe (distanceToA plusOrMinus 1e-4)
             pointB.distanceTo(otherPoint) shouldBe (distanceToB plusOrMinus 1e-4)
@@ -32,15 +32,15 @@ internal class PointTest : FreeSpec({
         val pointsAndLengths = table(
             headers("point", "length"),
             row(
-                Point(Math.toRadians(45.0), 1.0, 0),
+                PolarPoint(Math.toRadians(45.0), 1.0, 0),
                 1.0
             ),
             row(
-                Point(Math.toRadians(45.0), sqrt(2.0), 0),
+                PolarPoint(Math.toRadians(45.0), sqrt(2.0), 0),
                 sqrt(2.0)
             ),
             row(
-                Point(Math.toRadians(45.0), 2 * sqrt(2.0), 0),
+                PolarPoint(Math.toRadians(45.0), 2 * sqrt(2.0), 0),
                 2 * sqrt(2.0)
             )
         )
@@ -57,19 +57,19 @@ internal class PointTest : FreeSpec({
         val pointsAndRotations = table(
             headers("point", "rotation", "point after rotation"),
             row(
-                Point(0.0, 1.0, 0),
+                PolarPoint(0.0, 1.0, 0),
                 Math.toRadians(45.0),
-                Point(Math.toRadians(45.0), 1.0, 0)
+                PolarPoint(Math.toRadians(45.0), 1.0, 0)
             ),
             row(
-                Point(Math.toRadians(45.0), sqrt(2.0), 0),
+                PolarPoint(Math.toRadians(45.0), sqrt(2.0), 0),
                 Math.toRadians(-45.0),
-                Point(0.0, sqrt(2.0), 0)
+                PolarPoint(0.0, sqrt(2.0), 0)
             ),
             row(
-                Point(Math.toRadians(45.0), 2 * sqrt(2.0), 0),
+                PolarPoint(Math.toRadians(45.0), 2 * sqrt(2.0), 0),
                 Math.toRadians(180.0),
-                Point(Math.toRadians(225.0), 2 * sqrt(2.0), 0)
+                PolarPoint(Math.toRadians(225.0), 2 * sqrt(2.0), 0)
             )
         )
 
@@ -83,7 +83,7 @@ internal class PointTest : FreeSpec({
         }
 
         "toTSV" {
-            val point = Point(2.0, 3.0, 1)
+            val point = PolarPoint(2.0, 3.0, 1)
             val targetString = "3.0\t2.0\t1"
             point.toTSVString() shouldBe targetString
         }
@@ -92,19 +92,18 @@ internal class PointTest : FreeSpec({
             val distance = 0.5
             val angle = 2.3
             val quality = 50
-            val point = Point(angle, distance, quality)
+            val point = PolarPoint(angle, distance, quality)
             forall(
                 row(point),
-                row(Point(angle, distance + 1e-8, quality)),
-                row(Point(angle, distance, quality))
+                row(PolarPoint(angle, distance + 1e-8, quality)),
+                row(PolarPoint(angle, distance, quality))
             ) { targetPoint ->
                 point shouldBe targetPoint
             }
 
             forall(
-                row(Point(angle, distance, quality + 1)),
-                row(Point(angle, distance + 0.01, quality)),
-                row(Point(angle + 0.01, distance, quality)),
+                row(PolarPoint(angle, distance + 0.01, quality)),
+                row(PolarPoint(angle + 0.01, distance, quality)),
                 row(2.0)
             ) { targetPoint ->
                 point shouldNotBe targetPoint
@@ -122,7 +121,7 @@ internal class PointTest : FreeSpec({
 
     "computes x and y correctly" {
         forAll(pointsAndLengths) { distance, angle, x, y, quality ->
-            val point = Point(angle, distance, quality)
+            val point = PolarPoint(angle, distance, quality)
             point.x shouldBe (x plusOrMinus 1e-5)
             point.y shouldBe (y plusOrMinus 1e-5)
             point.quality shouldBe quality
