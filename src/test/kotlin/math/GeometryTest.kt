@@ -24,7 +24,7 @@ internal class GeometryTest : FreeSpec({
             row(1.0, 1.0, sqrt(2.0)),
             row(-1.0, -1.0, sqrt(2.0))
         ) { x, y, length ->
-            lengthOf(x, y) shouldBe (length plusOrMinus 1e-8)
+            lengthOf(x, y) shouldBe (length plusOrMinus PRECISION)
         }
     }
 
@@ -47,7 +47,7 @@ internal class GeometryTest : FreeSpec({
             row(Math.toRadians(180.0), PolarPoint(Math.toRadians(45.0), sqrt(2.0), 0), sqrt(2.0)),
             row(Math.toRadians(270.0), PolarPoint(Math.toRadians(225.0), sqrt(2.0), 0), 1.0)
         ) { angle, point, distance ->
-            distanceOriginLineToPoint(angle, point) shouldBe (distance plusOrMinus 1e-8)
+            distanceOriginLineToPoint(angle, point) shouldBe (distance plusOrMinus PRECISION)
         }
     }
 
@@ -71,7 +71,7 @@ internal class GeometryTest : FreeSpec({
                 sqrt(2.0)
             )
         ) { line, point, distance ->
-            distanceLineToPoint(line, point) shouldBe (distance plusOrMinus 1e-8)
+            distanceLineToPoint(line, point) shouldBe (distance plusOrMinus PRECISION)
         }
     }
 })

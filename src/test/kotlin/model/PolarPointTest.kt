@@ -7,6 +7,7 @@ import io.kotlintest.tables.forAll
 import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
 import io.kotlintest.tables.table
+import math.PRECISION
 import model.geometry.PolarPoint
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -34,7 +35,7 @@ internal class PolarPointTest : FreeSpec({
                 pointsAndLengths
             ) { point, _ ->
                 val vec = point.normalizedDirection()
-                sqrt(vec.first.pow(2) + vec.second.pow(2)) shouldBe (1.0 plusOrMinus 1e-5)
+                sqrt(vec.first.pow(2) + vec.second.pow(2)) shouldBe (1.0 plusOrMinus PRECISION)
             }
         }
 
@@ -83,8 +84,8 @@ internal class PolarPointTest : FreeSpec({
 
         forAll(pointsAndLengths) { distance, angle, x, y, quality ->
             val point = PolarPoint(angle, distance, quality)
-            point.x shouldBe (x plusOrMinus 1e-5)
-            point.y shouldBe (y plusOrMinus 1e-5)
+            point.x shouldBe (x plusOrMinus PRECISION)
+            point.y shouldBe (y plusOrMinus PRECISION)
             point.quality shouldBe quality
         }
     }

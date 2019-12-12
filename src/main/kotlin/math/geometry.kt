@@ -8,7 +8,9 @@ import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sqrt
 
+/** Precomputed value of PI / 2 for performance reasons */
 const val PIHALF = PI / 2
+/** Precision used for various geometric similarity checks */
 const val PRECISION = 1e-8
 
 fun lengthOf(x: Double, y: Double): Double =
