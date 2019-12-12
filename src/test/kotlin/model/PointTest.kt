@@ -30,7 +30,6 @@ internal class PointTest : FreeSpec({
         val p = Point(1, 2)
         val otherP = Point(3, 4)
         val line = Line(1, 1)
-
         mockkStatic("math.GeometryKt")
         every { distancePointToPoint(otherP, p) } returns 13.0
         every { distanceLineToPoint(line, p) } returns 23.0
