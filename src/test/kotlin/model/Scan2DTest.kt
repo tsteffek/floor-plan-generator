@@ -7,6 +7,7 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.tables.*
 import model.geometry.Point
+import model.geometry.PolarPoint
 import mu.KotlinLogging
 import kotlin.math.sqrt
 
@@ -32,9 +33,9 @@ class Scan2DTest : FreeSpec({
 
                 val targetPointCloud = table(
                     headers("Point"),
-                    row(Point(0.0, 1.0, 1)),
-                    row(Point(Math.toRadians(45.0), sqrt(2.0), 2)),
-                    row(Point(Math.toRadians(90.0), 1.0, 3))
+                    row(PolarPoint(0.0, 1.0, 1)),
+                    row(PolarPoint(Math.toRadians(45.0), sqrt(2.0), 2)),
+                    row(PolarPoint(Math.toRadians(90.0), 1.0, 3))
                 )
 
                 listOf(
@@ -74,9 +75,9 @@ class Scan2DTest : FreeSpec({
 
                 val targetPointCloud = table(
                     headers("Point"),
-                    row(Point(0.0, 1.0, 1)),
-                    row(Point(Math.toRadians(45.0), sqrt(2.0), 2)),
-                    row(Point(Math.toRadians(90.0), 1.0, 3))
+                    row(PolarPoint(0.0, 1.0, 1)),
+                    row(PolarPoint(Math.toRadians(45.0), sqrt(2.0), 2)),
+                    row(PolarPoint(Math.toRadians(90.0), 1.0, 3))
                 )
 
                 listOf(

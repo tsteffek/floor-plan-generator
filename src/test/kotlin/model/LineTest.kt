@@ -1,72 +1,73 @@
 package model
 
 import io.kotlintest.data.suspend.forall
-import io.kotlintest.matchers.doubles.plusOrMinus
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.tables.row
-import model.geometry.*
-import kotlin.math.PI
-import kotlin.math.sqrt
+import io.mockk.every
+import io.mockk.mockkStatic
+import io.mockk.verify
+import math.distanceLineToPoint
+import model.geometry.Line
+import model.geometry.Point
 
 internal class LineTest : FreeSpec({
-    "piHalf" {
-        piHalf shouldBe PI / 2
-    }
 
-    "distanceOriginLineToPoint" {
+    "constructors are all equal" {
+        val line = Line(1.0, 2.0)
         forall(
-            row(Math.toRadians(90.0), Point(Math.toRadians(45.0), sqrt(2.0), 0), 1.0),
-            row(Math.toRadians(180.0), Point(Math.toRadians(45.0), sqrt(2.0), 0), sqrt(2.0)),
-            row(Math.toRadians(270.0), Point(Math.toRadians(225.0), sqrt(2.0), 0), 1.0)
-        ) { angle, point, distance ->
-            distanceOriginLineToPoint(angle, point) shouldBe (distance plusOrMinus 1e-8)
+            row(Line(1, 2.0)),
+            row(Line(1.0, 2)),
+            row(Line(1, 2))
+        ) {
+            line shouldBe it
         }
     }
 
-    "distanceLineToPoint" {
-        forall(
-            row(
-//                Line(0, 0),
-//                Point(PI * 0.25, sqrt(2.0), 0),
-//                1.0
-//            ), row(
-//                Line(PI, 1),
-//                Point(PI * 0.25, sqrt(2.0), 0),
-//                0.0
-//            ), row(
-                Line(PI * 1.75, sqrt(2.0)),
-                Point(PI * 1.25, sqrt(2.0), 0),
-                sqrt(2.0)
-            ), row(
-                Line(PI * 0.25, sqrt(2.0)),
-                Point(PI * 0.5, 1, 0),
-                sqrt(2.0)/2
-            )
-        ) { line, point, distance ->
-            distanceLineToPoint(line, point) shouldBe (distance plusOrMinus 1e-8)
+    "distanceTo" - {
+        val l = Line(1, 2)
+        val point = Point(3, 4)
+        val line = Line(1.5, 1)
+        val parallelLine = Line(1, 1)
+
+        "distanceTo Point calls distanceLineToPoint" {
+            mockkStatic("math.GeometryKt")
+            every { distanceLineToPoint(l, point) } returns 13.0
+            l.distanceTo(point) shouldBe 13.0
+            verify { distanceLineToPoint(l, point) }
         }
+
+        "distanceTo Line is 0.0 or not implemented if parallel" {
+            l.distanceTo(line) shouldBe 0.0
+
+            shouldThrow<NotImplementedError> {
+                l.distanceTo(parallelLine)
+            }
+        }
+    }
+
+    "toTSV" {
+        val line = Line(2.0, 3.0)
+        val targetString = "2.0\t3.0"
+        line.toTSVString() shouldBe targetString
     }
 
     "companion object" - {
         "fromTwoPoints" {
             forall(
                 row(
-                    Point(piHalf, 1, 0),
-                    Point(piHalf / 2, sqrt(2.0), 1),
-                    Line(piHalf, 1)
+                    Point(0, 0),
+                    Point(1, 1),
+                    Line(1, 0)
                 ), row(
-                    Point(PI * 0.75, 50, 0),
-                    Point(PI * 1.75, sqrt(2.0), 1),
-                    Line(PI * 0.75, 0)
+                    Point(1, 1),
+                    Point(0, 0),
+                    Line(1, 0)
                 ), row(
-                    Point(PI * 1.25, sqrt(2.0) / 2, 0),
-                    Point(PI * 1.75, sqrt(2.0) / 2, 1),
-                    Line(PI * 1.5, 0.5)
-                ), row(
-                    Point(PI * 1.75, sqrt(2.0), 0),
-                    Point(PI * 1.5, 2, 1),
-                    Line(PI * 1.75, sqrt(2.0))
+                    Point(-2, -3),
+                    Point(-1, -3),
+                    Line(0, -3)
                 )
             ) { pointA, pointB, targetLine ->
                 Line.fromTwoPoints(pointA, pointB) shouldBe targetLine

@@ -5,6 +5,7 @@ package model
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import model.geometry.Point
+import model.geometry.PolarPoint
 import mu.KotlinLogging
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
@@ -24,7 +25,7 @@ fun readFromTSV(tsv: File): List<Map<String, String>> =
 fun readFromTSV(tsv: String): List<Map<String, String>> =
     getTSVReader().readAllWithHeader(tsv)
 
-class Scan2D(val pointCloud: List<Point>, private val scanner: Scanner) {
+class Scan2D(val pointCloud: List<PolarPoint>, private val scanner: Scanner) {
 
     fun rotateBy(angle: Double): List<Point> =
         pointCloud.map { it.rotateBy(angle) }
@@ -79,7 +80,7 @@ class Scan2D(val pointCloud: List<Point>, private val scanner: Scanner) {
 
 
         private fun calculatePoints(data: List<ScanData>, scanner: Scanner)
-                : List<Point> {
+                : List<PolarPoint> {
             val countNull = AtomicInteger(0)
             val countQuality = AtomicInteger(0)
 
@@ -90,7 +91,7 @@ class Scan2D(val pointCloud: List<Point>, private val scanner: Scanner) {
                 .map {
                     val clockwise = if (scanner.clockwise) -1 else 1
                     val angleInRad = Math.toRadians(it.amountOfSteps * scanner.stepAngle * clockwise)
-                    Point(angleInRad, it.distance!!, it.quality!!)
+                    PolarPoint(angleInRad, it.distance!!, it.quality!!)
                 }.toList()
 
             logger.info {
