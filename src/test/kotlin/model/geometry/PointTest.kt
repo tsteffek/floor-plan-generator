@@ -1,4 +1,4 @@
-package model
+package model.geometry
 
 import io.kotlintest.data.suspend.forall
 import io.kotlintest.shouldBe

@@ -1,4 +1,4 @@
-package model
+package model.geometry
 
 import io.kotlintest.matchers.doubles.plusOrMinus
 import io.kotlintest.shouldBe

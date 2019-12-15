@@ -2,6 +2,8 @@ package model.geometry
 
 import math.PRECISION
 import math.distanceLineToPoint
+import model.mean
+import kotlin.math.pow
 
 data class Line(val slope: Double, val intercept: Double) : GeometricObject {
 
@@ -43,7 +45,22 @@ data class Line(val slope: Double, val intercept: Double) : GeometricObject {
         fun fromTwoPoints(a: Point, b: Point): Line =
             fromSlopeAndPoint((a.y - b.y) / (a.x - b.x), a)
 
-        fun fromSlopeAndPoint(slope: Double, a: Point): Line =
-            Line(slope, a.y - slope * a.x)
+        internal fun fromSlopeAndPoint(slope: Double, a: Point): Line =
+            fromSlopeAndPoint(slope, a.x, a.y)
+
+        private fun fromSlopeAndPoint(slope: Double, x: Double, y: Double): Line =
+            Line(slope, y - slope * x)
+
+        /**
+         * Least Squares following https://www.varsitytutors.com/hotmath/hotmath_help/topics/line-of-best-fit
+         */
+        fun fromSeveralPoints(vararg points: Point): Line {
+            val xMean = points.map { it.x }.mean()
+            val yMean = points.map { it.y }.mean()
+            val slope =
+                points.map { (it.x - xMean) * (it.y - yMean) }.sum() / points.map { (it.x - xMean).pow(2) }.sum()
+
+            return fromSlopeAndPoint(slope, xMean, yMean)
+        }
     }
 }

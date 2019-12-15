@@ -41,3 +41,5 @@ fun <T : Any> List<T>.asCyclicReversed(startingIndex: Int, endIndex: Int): Seque
         else null
     }
 }
+
+fun Collection<Double>.mean(): Double = this.sum() / this.size

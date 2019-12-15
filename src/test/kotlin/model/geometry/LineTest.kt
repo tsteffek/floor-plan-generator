@@ -1,4 +1,4 @@
-package model
+package model.geometry
 
 import io.kotlintest.data.suspend.forall
 import io.kotlintest.shouldBe
@@ -9,8 +9,6 @@ import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.verify
 import math.distanceLineToPoint
-import model.geometry.Line
-import model.geometry.Point
 
 internal class LineTest : FreeSpec({
 
@@ -61,9 +59,9 @@ internal class LineTest : FreeSpec({
                     Point(1, 1),
                     Line(1, 0)
                 ), row(
-                    Point(1, 1),
+                    Point(1, -1),
                     Point(0, 0),
-                    Line(1, 0)
+                    Line(-1, 0)
                 ), row(
                     Point(-2, -3),
                     Point(-1, -3),
@@ -73,5 +71,55 @@ internal class LineTest : FreeSpec({
                 Line.fromTwoPoints(pointA, pointB) shouldBe targetLine
             }
         }
+
+        "fromSeveralPoints from 2 points" {
+            forall(
+                row(
+                    Point(0, 0),
+                    Point(1, 1),
+                    Line(1, 0)
+                ), row(
+                    Point(1, -1),
+                    Point(0, 0),
+                    Line(-1, 0)
+                ), row(
+                    Point(-2, -3),
+                    Point(-1, -3),
+                    Line(0, -3)
+                )
+            ) { pointA, pointB, targetLine ->
+                Line.fromSeveralPoints(pointA, pointB) shouldBe targetLine
+            }
+        }
+
+        "fromSeveralPoints from 3 points" {
+            forall(
+                row(
+                    listOf(
+                        Point(0, 0),
+                        Point(1, 1),
+                        Point(1, 1)
+                    ),
+                    Line(1, 0)
+                ), row(
+                    listOf(
+                        Point(1, -1),
+                        Point(0, 0),
+                        Point(2, -2)
+                    ),
+                    Line(-1, 0)
+                ), row(
+                    listOf(
+                        Point(-2, -3),
+                        Point(-1, -3),
+                        Point(0, -3)
+                    ),
+                    Line(0, -3)
+                )
+            ) { points, targetLine ->
+                Line.fromSeveralPoints(*points.toTypedArray()) shouldBe targetLine
+            }
+        }
+
     }
 })

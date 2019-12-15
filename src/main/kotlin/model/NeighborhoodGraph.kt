@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 private val logger by lazy { KotlinLogging.logger {} }
 
-class NeighborhoodGraph<T : GeometricObject>(
+data class NeighborhoodGraph<T : GeometricObject>(
     private val map: Map<T, Set<T>>
 ) {
     fun getObjects(): Set<T> = map.keys
