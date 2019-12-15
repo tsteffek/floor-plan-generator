@@ -4,6 +4,10 @@ import math.distanceOriginLineToPoint
 import math.distancePointToPoint
 import model.geometry.GeometricObject
 import model.geometry.PolarPoint
+import mu.KotlinLogging
+import java.util.concurrent.atomic.AtomicInteger
+
+private val logger by lazy { KotlinLogging.logger {} }
 
 class NeighborhoodGraph<T : GeometricObject>(
     private val map: Map<T, Set<T>>
@@ -29,10 +33,14 @@ class NeighborhoodGraph<T : GeometricObject>(
             return NeighborhoodGraph(filterOutlier(objectToList))
         }
 
-        private fun <T> filterOutlier(map: Map<T, Set<T>>): Map<T, Set<T>> =
-            map.filter { (point, neighbors) ->
+        private fun <T> filterOutlier(map: Map<T, Set<T>>): Map<T, Set<T>> {
+            val count = AtomicInteger(0)
+            val filteredMap = map.filterAndCount(count) { (point, neighbors) ->
                 neighbors.all { neighbor -> map.getValue(neighbor).contains(point) }
             }
+            logger.info { "filtered outliers: $count out of ${map.size}" }
+            return filteredMap
+        }
 
         fun fromPolarPoints(points: List<PolarPoint>): NeighborhoodGraph<PolarPoint> {
             val sortedPoints = points.sortedBy { it.angle }
@@ -60,7 +68,6 @@ class NeighborhoodGraph<T : GeometricObject>(
                     it, null, Double.POSITIVE_INFINITY, backwardIterator
                 )!!
             )
-
         }
 
         private tailrec fun computeNextClosestRec(

@@ -2,7 +2,21 @@ package model
 
 import java.util.concurrent.atomic.AtomicInteger
 
-inline fun <T> Sequence<T>.filterAndCount(counter: AtomicInteger, crossinline predicate: (T) -> Boolean): Sequence<T> =
+inline fun <T> Sequence<T>.filterAndCount(
+    counter: AtomicInteger, crossinline predicate: (T) -> Boolean
+): Sequence<T> =
+    this.filter {
+        if (predicate(it)) {
+            true
+        } else {
+            counter.incrementAndGet()
+            false
+        }
+    }
+
+inline fun <K, V> Map<out K, V>.filterAndCount(
+    counter: AtomicInteger, predicate: (Map.Entry<K, V>) -> Boolean
+): Map<K, V> =
     this.filter {
         if (predicate(it)) {
             true

@@ -3,6 +3,8 @@ package model
 import io.kotlintest.assertSoftly
 import io.kotlintest.matchers.asClue
 import io.kotlintest.matchers.collections.shouldContain
+import io.kotlintest.matchers.collections.shouldContainExactly
+import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.tables.*
@@ -31,11 +33,10 @@ class Scan2DTest : FreeSpec({
                     13	2	1	3
                 """.trimIndent()
 
-                val targetPointCloud = table(
-                    headers("Point"),
-                    row(PolarPoint(0.0, 1.0, 1)),
-                    row(PolarPoint(Math.toRadians(45.0), sqrt(2.0), 2)),
-                    row(PolarPoint(Math.toRadians(90.0), 1.0, 3))
+                val targetPointCloud = listOf(
+                    PolarPoint(0.0, 1.0, 1),
+                    PolarPoint(Math.toRadians(45.0), sqrt(2.0), 2),
+                    PolarPoint(Math.toRadians(90.0), 1.0, 3)
                 )
 
                 listOf(
@@ -45,11 +46,7 @@ class Scan2DTest : FreeSpec({
                     "should create the pointCloud correctly from $method" {
                         assertSoftly {
                             scan.pointCloud.size shouldBe 3
-                            scan.pointCloud.asClue {
-                                forAll(targetPointCloud) {
-                                    scan.pointCloud shouldContain it
-                                }
-                            }
+                            scan.pointCloud shouldContainExactly targetPointCloud
                         }
                     }
                 }
@@ -73,11 +70,10 @@ class Scan2DTest : FreeSpec({
                     1	1	1	3
                 """.trimIndent()
 
-                val targetPointCloud = table(
-                    headers("Point"),
-                    row(PolarPoint(0.0, 1.0, 1)),
-                    row(PolarPoint(Math.toRadians(45.0), sqrt(2.0), 2)),
-                    row(PolarPoint(Math.toRadians(90.0), 1.0, 3))
+                val targetPointCloud = listOf(
+                    PolarPoint(0.0, 1.0, 1),
+                    PolarPoint(Math.toRadians(45.0), sqrt(2.0), 2),
+                    PolarPoint(Math.toRadians(90.0), 1.0, 3)
                 )
 
                 listOf(
@@ -87,15 +83,57 @@ class Scan2DTest : FreeSpec({
                     "should create the pointCloud correctly from $method" {
                         assertSoftly {
                             scan.pointCloud.size shouldBe 3
-                            scan.pointCloud.asClue {
-                                forAll(targetPointCloud) {
-                                    scan.pointCloud shouldContain it
-                                }
-                            }
+                            scan.pointCloud shouldContainExactly targetPointCloud
                         }
                     }
                 }
             }
+        }
+    }
+
+    "filters quality above threshold" {
+        val qualityMax = 100
+        val testScanner = Scanner("TestScanner-Total", false, 45.0, false, qualityMax)
+        val tsv = """
+                    id	step size	distance	quality
+                    1	0	1	1
+                    2	1	1.41421356	$qualityMax
+                    13	2	1	3
+                """.trimIndent()
+
+        val targetPointCloud = listOf(
+            PolarPoint(0.0, 1.0, 1),
+            PolarPoint(Math.toRadians(90.0), 1.0, 3)
+        )
+
+        val scan = Scan2D.fromTSV(tsv, testScanner)
+        assertSoftly {
+            scan.pointCloud.size shouldBe 2
+            scan.pointCloud shouldContainExactly targetPointCloud
+        }
+    }
+
+    "filters NaN distance or quality" {
+        val qualityMax = 100
+        val testScanner = Scanner("TestScanner-Total", false, 45.0, false, qualityMax)
+        val tsv = """
+                    id	step size	distance	quality
+                    1	0	1	1
+                    2	1	NaN	2
+                    2	1	x	2
+                    3	1.5	1.41421356	NaN
+                    13	2	1	3
+                """.trimIndent()
+
+        val targetPointCloud = listOf(
+            PolarPoint(0.0, 1.0, 1),
+            PolarPoint(Math.toRadians(90.0), 1.0, 3)
+        )
+
+        val scan = Scan2D.fromTSV(tsv, testScanner)
+        assertSoftly {
+            scan.pointCloud.size shouldBe 2
+            scan.pointCloud shouldContainExactly targetPointCloud
         }
     }
 })

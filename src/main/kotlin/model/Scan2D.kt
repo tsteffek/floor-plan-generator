@@ -86,7 +86,7 @@ class Scan2D(val pointCloud: List<PolarPoint>, private val scanner: Scanner) {
 
             val points = data
                 .asSequence()
-                .filterAndCount(countNull) { it.distance !== null && it.quality !== null }
+                .filterAndCount(countNull) { it.distance !== null && !it.distance.isNaN() && it.quality !== null }
                 .filterAndCount(countQuality) { it.quality!! < scanner.qualityMax }
                 .map {
                     val clockwise = if (scanner.clockwise) -1 else 1
