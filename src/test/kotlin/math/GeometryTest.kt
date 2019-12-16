@@ -69,6 +69,10 @@ internal class GeometryTest : FreeSpec({
                 Line(-1, 0),
                 Point(1, 1),
                 sqrt(2.0)
+            ), row(
+                Line(0, 2),
+                Point(1, 1),
+                1.0
             )
         ) { line, point, distance ->
             distanceLineToPoint(line, point) shouldBe (distance plusOrMinus PRECISION)

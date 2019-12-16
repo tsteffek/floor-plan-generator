@@ -34,7 +34,8 @@ fun intersectTwoLines(a: Line, b: Line): Point {
 }
 
 fun distanceLineToPoint(l: Line, p: Point): Double {
-    val inverseSlope = - 1 / l.slope
+    if (l.slope == 0.0) return l.intercept - p.y
+    val inverseSlope = -1 / l.slope
     val perpendicularLine = Line.fromSlopeAndPoint(inverseSlope, p)
     val intersection = intersectTwoLines(l, perpendicularLine)
     return distancePointToPoint(p, intersection)

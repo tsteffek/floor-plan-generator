@@ -5,7 +5,7 @@ import math.distanceLineToPoint
 import model.mean
 import kotlin.math.pow
 
-data class Line(val slope: Double, val intercept: Double) : GeometricObject {
+class Line(val slope: Double, val intercept: Double) : GeometricObject {
 
     constructor(slope: Int, intercept: Double) : this(slope.toDouble(), intercept)
     constructor(slope: Double, intercept: Int) : this(slope, intercept.toDouble())
@@ -22,6 +22,9 @@ data class Line(val slope: Double, val intercept: Double) : GeometricObject {
 
     override fun toTSVString(): String =
         "$slope\t$intercept"
+
+    override fun toString(): String =
+        "Line(slope=$slope, intercept=$intercept)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -54,7 +57,7 @@ data class Line(val slope: Double, val intercept: Double) : GeometricObject {
         /**
          * Least Squares following https://www.varsitytutors.com/hotmath/hotmath_help/topics/line-of-best-fit
          */
-        fun fromSeveralPoints(vararg points: Point): Line {
+        fun fromSeveralPoints(points: Collection<Point>): Line {
             val xMean = points.map { it.x }.mean()
             val yMean = points.map { it.y }.mean()
             val slope =

@@ -12,6 +12,8 @@ private val logger by lazy { KotlinLogging.logger {} }
 data class NeighborhoodGraph<T : GeometricObject>(
     private val map: Map<T, Set<T>>
 ) {
+    fun getSize(): Int = map.size
+
     fun getObjects(): Set<T> = map.keys
 
     fun getNeighbors(t: T): Set<T> = map.getValue(t)
@@ -36,7 +38,9 @@ data class NeighborhoodGraph<T : GeometricObject>(
         private fun <T> filterOutlier(map: Map<T, Set<T>>): Map<T, Set<T>> {
             val count = AtomicInteger(0)
             val filteredMap = map.filterAndCount(count) { (point, neighbors) ->
-                neighbors.all { neighbor -> map.getValue(neighbor).contains(point) }
+                neighbors.any { neighbor ->
+                    map.getValue(neighbor).contains(point)
+                }
             }
             logger.info { "filtered outliers: $count out of ${map.size}" }
             return filteredMap
