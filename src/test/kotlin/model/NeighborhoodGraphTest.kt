@@ -1,17 +1,35 @@
 package model
 
 import io.kotlintest.assertSoftly
+import io.kotlintest.data.forall
 import io.kotlintest.matchers.asClue
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.tables.row
+import model.geometry.Point
 import model.geometry.PolarPoint
 import mu.KotlinLogging
 
 private val logger by lazy { KotlinLogging.logger {} }
 
 class NeighborhoodGraphTest : FreeSpec({
+
+    "getSize" {
+        forall(
+            row(
+                listOf(Point(1, 0), Point(2, 0)), 2
+            ), row(
+                listOf(Point(1, 0), Point(2, 0), Point(3, 0)), 3
+            ),
+            row(
+                listOf(Point(1, 0), Point(2, 0), Point(3, 0), Point(4, 0)), 4
+            )
+        ) { points, targetSize ->
+            NeighborhoodGraph.usingBruteForce(points).getSize() shouldBe targetSize
+        }
+    }
 
     "companion object" - {
         val a = PolarPoint(0.0, 1.0, 0)

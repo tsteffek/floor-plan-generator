@@ -4,7 +4,6 @@
 package model
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import model.geometry.Point
 import model.geometry.PolarPoint
 import mu.KotlinLogging
 import java.io.File
@@ -27,7 +26,7 @@ fun readFromTSV(tsv: String): List<Map<String, String>> =
 
 class Scan2D(val pointCloud: List<PolarPoint>, private val scanner: Scanner) {
 
-    fun rotateBy(angle: Double): List<Point> =
+    fun rotateBy(angle: Double): List<PolarPoint> =
         pointCloud.map { it.rotateBy(angle) }
 
     fun toTSV(): String {
