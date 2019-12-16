@@ -20,7 +20,7 @@ class ModelFittingTest : FreeSpec({
                 Line(1, 4)
             )
             val graph = NeighborhoodGraph.usingBruteForce(points)
-            val lines = fitLinesRec(graph)
+            val lines = fitLines(graph)
             lines.flatMap { it.asIterable() }.size shouldBe points.size
             lines.map { Line.fromSeveralPoints(it) } shouldContainExactly targetLines
         }
@@ -39,7 +39,7 @@ class ModelFittingTest : FreeSpec({
                 Line(-1.5, 4)
                 )
             val graph = NeighborhoodGraph.usingBruteForce(points)
-            val lines = fitLinesRec(graph)
+            val lines = fitLines(graph)
             lines.flatMap { it.asIterable() }.size shouldBe points.size
             lines.map { Line.fromSeveralPoints(it) } shouldContainExactly targetLines
         }
@@ -63,7 +63,7 @@ class ModelFittingTest : FreeSpec({
                 Line(-1, -80)
             )
             val graph = NeighborhoodGraph.usingBruteForce(points)
-            val lines = fitLinesRec(graph)
+            val lines = fitLines(graph)
             lines.flatMap { it.asIterable() }.size shouldBe points.size
             lines.map { Line.fromSeveralPoints(it) } shouldContainExactly targetLines
         }
@@ -88,7 +88,7 @@ class ModelFittingTest : FreeSpec({
                 Line(-1, -80)
             )
             val graph = NeighborhoodGraph.usingBruteForce(points)
-            val lines = fitLinesRec(graph)
+            val lines = fitLines(graph)
             lines.flatMap { it.asIterable() }.size shouldBe points.size
             lines.map { Line.fromSeveralPoints(it) } shouldContainExactly targetLines
         }

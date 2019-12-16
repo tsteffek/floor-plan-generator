@@ -6,11 +6,15 @@ import model.geometry.Line
 import model.geometry.Point
 import java.util.LinkedList
 
-fun <T : Point> fitLinesRec(graph: NeighborhoodGraph<T>): List<Set<T>> =
-    fitLinesRec(graph.getObjects(), graph = graph)
+/** Threshold for line fitting, defaults to 1mm deviation from the line */
+const val THRESHOLD = 1.0 / 1000.0
 
-@Suppress("TAILREC_WITH_DEFAULTS") // this warns, that tailrec parameter defaults will be initialized in reverse order - which doesn't matter here.
-tailrec fun <T : Point> fitLinesRec(
+fun <T : Point> fitLines(graph: NeighborhoodGraph<T>): List<Set<T>> =
+    fitLines(graph.getObjects(), graph = graph)
+
+// this warns, that tailrec parameter defaults will be initialized in reverse order - which doesn't matter here.
+@Suppress("TAILREC_WITH_DEFAULTS")
+tailrec fun <T : Point> fitLines(
     points: Set<T>,
     takenPoints: MutableSet<T> = HashSet(),
     graph: NeighborhoodGraph<T>,
@@ -23,7 +27,7 @@ tailrec fun <T : Point> fitLinesRec(
     val initialNeighbors = LinkedList(getNotTakenNeighbors(startPoint, takenPoints, graph))
     lines.add(findNeighborsOnLine(setOf(startPoint), initialNeighbors, takenPoints, graph))
 
-    return fitLinesRec(graph.getObjects() - takenPoints, takenPoints, graph, lines)
+    return fitLines(graph.getObjects() - takenPoints, takenPoints, graph, lines)
 }
 
 private tailrec fun <T : Point> findNeighborsOnLine(
@@ -41,7 +45,7 @@ private tailrec fun <T : Point> findNeighborsOnLine(
     val line = Line.fromSeveralPoints(newLinePoints)
     val maxDistance = newLinePoints.map { distanceLineToPoint(line, it) }.max()!!
 
-    return if (maxDistance > 0.0001) {
+    return if (maxDistance > THRESHOLD) {
         findNeighborsOnLine(linePoints, nearestPoints, takenPoints, graph)
     } else {
         takenPoints.add(nearestPoint)

@@ -3,7 +3,6 @@ package model
 import math.distanceOriginLineToPoint
 import math.distancePointToPoint
 import model.geometry.GeometricObject
-import model.geometry.Point
 import model.geometry.PolarPoint
 import mu.KotlinLogging
 import java.util.concurrent.atomic.AtomicInteger
