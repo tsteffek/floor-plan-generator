@@ -9,7 +9,7 @@ import model.geometry.Point
 
 class ModelFittingTest : FreeSpec({
 
-    "initRecursion" - {
+    "fitLines" - {
         "will detect a line" {
             val points = listOf(
                 Point(-2, 2), // will detect line

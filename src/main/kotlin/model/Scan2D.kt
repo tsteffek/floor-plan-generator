@@ -1,28 +1,12 @@
-@file:JvmName("Utils")
-@file:JvmMultifileClass
-
 package model
 
-import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import io.readFromTSV
 import model.geometry.PolarPoint
 import mu.KotlinLogging
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
 
 private val logger by lazy { KotlinLogging.logger {} }
-
-private fun getTSVReader() = csvReader {
-    charset = "UTF-8"
-    quoteChar = '"'
-    delimiter = '\t'
-    escapeChar = '\\'
-}
-
-fun readFromTSV(tsv: File): List<Map<String, String>> =
-    getTSVReader().readAllWithHeader(tsv)
-
-fun readFromTSV(tsv: String): List<Map<String, String>> =
-    getTSVReader().readAllWithHeader(tsv)
 
 class Scan2D(val pointCloud: List<PolarPoint>, private val scanner: Scanner) {
 
@@ -59,21 +43,22 @@ class Scan2D(val pointCloud: List<PolarPoint>, private val scanner: Scanner) {
         private fun fromMap(map: List<Map<String, String>>, scanner: Scanner): Scan2D {
             var parsedData = map
                 .mapIndexed { index, dataObject ->
-                    ScanData(
-                        dataObject[scanner.idKey]?.toInt()
-                            ?: error("${scanner.idKey} missing in CSV line ${index + 1}"),
-                        dataObject[scanner.stepSizeKey]?.toDouble()
-                            ?: error("${scanner.stepSizeKey} missing in CSV line ${index + 1}"),
-                        dataObject[scanner.distanceKey]?.toDoubleOrNull(),
-                        dataObject[scanner.qualityKey]?.toIntOrNull()
-                    )
+                    val id = dataObject[scanner.idKey]?.toInt()
+                    val amountOfSteps = dataObject[scanner.stepSizeKey]?.toDoubleOrNull()
+                    val distance = dataObject[scanner.distanceKey]?.toDoubleOrNull()
+                    val quality = dataObject[scanner.qualityKey]?.toIntOrNull()
+
+                    requireNotNull(id)
+                    { "${scanner.idKey} missing in CSV line ${index + 1}" }
+                    require(amountOfSteps != null && !amountOfSteps.isNaN())
+                    { "${scanner.stepSizeKey} missing in CSV line ${index + 1}" }
+
+                    ScanData(id, amountOfSteps, distance, quality)
                 }
 
-            if (scanner.incremental)
-                parsedData = toTotalStepSizes(parsedData)
+            if (scanner.incremental) parsedData = toTotalStepSizes(parsedData)
 
             val points = calculatePoints(parsedData, scanner)
-
             return Scan2D(points, scanner)
         }
 
