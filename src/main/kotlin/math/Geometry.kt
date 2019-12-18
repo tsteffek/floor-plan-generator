@@ -1,11 +1,14 @@
 package math
 
 import model.geometry.Line
+import model.geometry.LineSegment
 import model.geometry.Point
 import model.geometry.PolarPoint
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 
 /** Precomputed value of PI / 2 for performance reasons. */
@@ -13,11 +16,54 @@ const val PIHALF = PI / 2
 /** Precision used for various geometric similarity checks. */
 const val PRECISION = 1e-8
 
-fun lengthOf(x: Double, y: Double): Double =
-    sqrt(x * x + y * y)
+fun dot(a: Point, b: Point): Double =
+    a.x * b.x + a.y * b.y
 
-fun distancePointToPoint(a: Point, b: Point) =
+private fun lengthOf(x: Double, y: Double): Double =
+    sqrt(lengthSquared(x, y))
+
+private fun lengthSquared(x: Double, y: Double): Double =
+    x * x + y * y
+
+fun distance(a: Point, b: Point) =
     lengthOf(a.x - b.x, a.y - b.y)
+
+fun distance(p: Point, l: Line): Double {
+    if (l.slope == 0.0) return l.intercept - p.y
+    val inverseSlope = -1 / l.slope
+    val perpendicularLine = Line.fromSlopeAndPoint(inverseSlope, p)
+    val intersection = intersectTwoLines(l, perpendicularLine)!!
+    return distance(p, intersection)
+}
+
+private fun intersectTwoLines(a: Line, b: Line): Point? {
+    val slopeDif = a.slope - b.slope
+    if (slopeDif == 0.0) return null
+    val x = (b.intercept - a.intercept) / slopeDif
+    val y = a.slope * x + a.intercept
+    return Point(x, y)
+}
+
+fun distance(p: Point, lineSeg: LineSegment): Double =
+    distance(p, projectOntoSegment(p, lineSeg))
+
+private fun projectOntoSegment(p: Point, lineSeg: LineSegment): Point {
+    val t = max(0.0, min(1.0, lineVectorConstantToProjection(p, lineSeg.startPoint, lineSeg.endPoint)))
+    return lineSeg.startPoint + (lineSeg.endPoint - lineSeg.startPoint) * t
+}
+
+internal fun projectOntoLine(p: Point, line: Line): Point {
+    val startPoint = Point(0, line.intercept)
+    val endPoint = Point(1, line.slope + line.intercept)
+    val t = lineVectorConstantToProjection(p, startPoint, endPoint)
+    return startPoint + (endPoint - startPoint) * t
+}
+
+private fun lineVectorConstantToProjection(p: Point, startPoint: Point, endPoint: Point): Double {
+    val lineVec = endPoint - startPoint
+    val length2 = lengthSquared(lineVec.x, lineVec.y)
+    return dot(p - startPoint, lineVec) / length2
+}
 
 fun distanceOriginLineToPoint(angle: Double, p: PolarPoint): Double {
     val angleBetween = angle - p.angle
@@ -27,16 +73,14 @@ fun distanceOriginLineToPoint(angle: Double, p: PolarPoint): Double {
         p.distance
 }
 
-fun intersectTwoLines(a: Line, b: Line): Point {
-    val x = (b.intercept - a.intercept) / (a.slope - b.slope)
-    val y = a.slope * x + a.intercept
-    return Point(x, y)
-}
+fun distance(lineA: LineSegment, lineB: LineSegment): Double {
+    val intersection = intersectTwoLines(lineA, lineB)
+    if (intersection != null && intersection.liesOn(lineA) && intersection.liesOn(lineB)) return 0.0
 
-fun distanceLineToPoint(l: Line, p: Point): Double {
-    if (l.slope == 0.0) return l.intercept - p.y
-    val inverseSlope = -1 / l.slope
-    val perpendicularLine = Line.fromSlopeAndPoint(inverseSlope, p)
-    val intersection = intersectTwoLines(l, perpendicularLine)
-    return distancePointToPoint(p, intersection)
+    val distA1 = distance(lineA.startPoint, lineB)
+    val distA2 = distance(lineA.endPoint, lineB)
+    val distB1 = distance(lineB.startPoint, lineA)
+    val distB2 = distance(lineB.endPoint, lineA)
+
+    return min(min(distA1, distA2), min(distB1, distB2))
 }

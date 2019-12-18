@@ -1,8 +1,7 @@
 package model.geometry
 
 import math.PRECISION
-import math.distanceLineToPoint
-import math.distancePointToPoint
+import math.distance
 
 open class Point(val x: Double, val y: Double) : GeometricObject {
 
@@ -10,10 +9,30 @@ open class Point(val x: Double, val y: Double) : GeometricObject {
     constructor(x: Double, y: Int) : this(x, y.toDouble())
     constructor(x: Int, y: Int) : this(x.toDouble(), y.toDouble())
 
+    operator fun plus(other: Point): Point =
+        Point(x + other.x, y + other.y)
+
+    operator fun minus(other: Point): Point =
+        Point(x - other.x, y - other.y)
+
+    operator fun times(constant: Double): Point =
+        Point(x * constant, y * constant)
+
+    fun liesOn(line: Line): Boolean =
+        line.slope * x + line.intercept == y
+
+    fun liesOn(lineSeg: LineSegment): Boolean {
+        val doesntLieOnLine = !liesOn(lineSeg as Line)
+        val oneOfThePoints = lineSeg.startPoint == this || lineSeg.endPoint == this
+        return if (doesntLieOnLine) false
+        else if (oneOfThePoints) true
+        else lineSeg.inBoundingBox(this)
+    }
+
     override fun distanceTo(other: GeometricObject): Double =
         when (other) {
-            is Point -> distancePointToPoint(other, this)
-            is Line -> distanceLineToPoint(other, this)
+            is Point -> distance(other, this)
+            is Line -> distance(this, other)
             else -> throw NotImplementedError()
         }
 

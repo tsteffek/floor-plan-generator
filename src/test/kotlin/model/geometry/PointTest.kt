@@ -9,10 +9,7 @@ import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.verifyAll
 import math.PRECISION
-import math.distanceLineToPoint
-import math.distancePointToPoint
-import model.geometry.Line
-import model.geometry.Point
+import math.distance
 
 internal class PointTest : FreeSpec({
 
@@ -27,20 +24,42 @@ internal class PointTest : FreeSpec({
         }
     }
 
+    "liesOn Line" {
+        val p = Point(1, 1)
+        forall(
+            row(LineSegment(Point(1, 1), Point(2, 2)), true),
+            row(LineSegment(Point(0, 0), Point(2, 2)), true),
+            row(LineSegment(Point(0, 0), Point(-2, 2)), false)
+        ) { lineSegment, targetBool ->
+            p.liesOn(lineSegment as Line) shouldBe targetBool
+        }
+    }
+
+    "liesOn LineSegment" {
+        val p = Point(1, 1)
+        forall(
+            row(LineSegment(Point(1, 1), Point(2, 2)), true),
+            row(LineSegment(Point(0, 0), Point(2, 2)), true),
+            row(LineSegment(Point(0, 0), Point(-2, 2)), false)
+        ) { lineSegment, targetBool ->
+            p.liesOn(lineSegment) shouldBe targetBool
+        }
+    }
+
     "distanceTo" {
         val p = Point(1, 2)
         val otherP = Point(3, 4)
         val line = Line(1, 1)
         mockkStatic("math.GeometryKt")
-        every { distancePointToPoint(otherP, p) } returns 13.0
-        every { distanceLineToPoint(line, p) } returns 23.0
+        every { distance(otherP, p) } returns 13.0
+        every { distance(p, line) } returns 23.0
 
         p.distanceTo(otherP) shouldBe 13.0
         p.distanceTo(line) shouldBe 23.0
 
         verifyAll {
-            distanceLineToPoint(line, p)
-            distancePointToPoint(otherP, p)
+            distance(p, line)
+            distance(otherP, p)
         }
     }
 

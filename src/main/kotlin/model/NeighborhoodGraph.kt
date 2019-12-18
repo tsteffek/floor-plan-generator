@@ -1,7 +1,7 @@
 package model
 
 import math.distanceOriginLineToPoint
-import math.distancePointToPoint
+import math.distance
 import model.geometry.GeometricObject
 import model.geometry.PolarPoint
 import mu.KotlinLogging
@@ -86,7 +86,7 @@ data class NeighborhoodGraph<T : GeometricObject>(
             val shortestPossibleDistance = distanceOriginLineToPoint(nextPoint.angle, it)
             if (distanceToClosest < shortestPossibleDistance || it == nextPoint) return closestPoint
 
-            val distanceToNext = distancePointToPoint(it, nextPoint)
+            val distanceToNext = distance(it, nextPoint)
             return if (distanceToClosest < distanceToNext)
                 computeNextClosestRec(it, closestPoint, distanceToClosest, iterator)
             else
