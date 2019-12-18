@@ -9,14 +9,16 @@ import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.verify
 import math.distance
+import kotlin.math.PI
+import kotlin.math.sqrt
 
 internal class LineSegmentTest : FreeSpec({
 
     "inBoundingBox" {
-        val point = Point(1,1)
+        val point = Point(1, 1)
         forall(
-            row("point in boundingBox", LineSegment(Point(0.5,0.5), Point(2,3)), true),
-            row("point outside of boundingBox", LineSegment(Point(2,2), Point(1.1,1.1)), false)
+            row("point in boundingBox", LineSegment(Point(0.5, 0.5), Point(2, 3)), true),
+            row("point outside of boundingBox", LineSegment(Point(2, 2), Point(1.1, 1.1)), false)
         ) { case, lineSegment, targetBool ->
             lineSegment.inBoundingBox(point) shouldBe targetBool
         }
@@ -49,5 +51,87 @@ internal class LineSegmentTest : FreeSpec({
                 l.distanceTo(parallelLine)
             }
         }
+    }
+
+    "companion object" - {
+        "fromSeveralPoints from 2 points" {
+            forall(
+                row(
+                    listOf(
+                        PolarPoint(0, 0, 0),
+                        PolarPoint(PI * 0.25, sqrt(2.0), 1)
+                    ),
+                    LineSegment(
+                        Point(0, 0),
+                        Point(1, 1)
+                    )
+                ), row(
+                    listOf(
+                        PolarPoint(0, 0, 2),
+                        PolarPoint(PI * 0.75, sqrt(2.0), 3)
+                    ),
+                    LineSegment(
+                        Point(0, 0),
+                        Point(-1, 1)
+                    )
+                ), row(
+                    listOf(
+                        PolarPoint(PI * 1.25, sqrt(2.0), 4),
+                        PolarPoint(PI * 1.5, 1, 5)
+                    ),
+                    LineSegment(
+                        Point(-1, -1),
+                        Point(0, -1)
+                    )
+                )
+            ) { sortedPoints, targetLine ->
+                val segment = LineSegment.fromSeveralPoints(sortedPoints)
+                segment shouldBe targetLine
+                segment.startPoint shouldBe targetLine.startPoint
+                segment.endPoint shouldBe targetLine.endPoint
+            }
+        }
+
+        "fromSeveralPoints from 3 points" {
+            forall(
+                row(
+                    listOf(
+                        PolarPoint(0, 0, 0),
+                        PolarPoint(PI * 0.25, 0.5, 1),
+                        PolarPoint(PI * 0.25, sqrt(2.0), 2)
+                    ),
+                    LineSegment(
+                        Point(0, 0),
+                        Point(1, 1)
+                    )
+                ), row(
+                    listOf(
+                        PolarPoint(0, 0, 2),
+                        PolarPoint(PI * 0.75, 0.5, 2),
+                        PolarPoint(PI * 0.75, sqrt(2.0), 3)
+                    ),
+                    LineSegment(
+                        Point(0, 0),
+                        Point(-1, 1)
+                    )
+                ), row(
+                    listOf(
+                        PolarPoint(PI * 1.25, sqrt(2.0), 4),
+                        PolarPoint(PI * 1.25, sqrt(2.0), 4),
+                        PolarPoint(PI * 1.5, 1, 5)
+                    ),
+                    LineSegment(
+                        Point(-1, -1),
+                        Point(0, -1)
+                    )
+                )
+            ) { sortedPoints, targetLine ->
+                val segment = LineSegment.fromSeveralPoints(sortedPoints)
+                segment shouldBe targetLine
+                segment.startPoint shouldBe targetLine.startPoint
+                segment.endPoint shouldBe targetLine.endPoint
+            }
+        }
+
     }
 })

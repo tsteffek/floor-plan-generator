@@ -1,9 +1,13 @@
 package model.geometry
 
 import math.distance
+import math.projectOntoLine
 
-class LineSegment(val startPoint: Point, val endPoint: Point) :
-    Line(slopeAndInterceptFromTwoPoints(startPoint, endPoint)) {
+class LineSegment(line: Line, val startPoint: Point, val endPoint: Point) :
+    Line(line.slope, line.intercept) {
+
+    constructor(startPoint: Point, endPoint: Point)
+            : this(fromTwoPoints(startPoint, endPoint), startPoint, endPoint)
 
     override fun distanceTo(other: GeometricObject): Double =
         when (other) {
@@ -15,7 +19,7 @@ class LineSegment(val startPoint: Point, val endPoint: Point) :
             else -> throw NotImplementedError()
         }
 
-    internal fun inBoundingBox(p:Point): Boolean {
+    internal fun inBoundingBox(p: Point): Boolean {
         val xMax: Double
         val yMax: Double
         val xMin: Double
@@ -38,10 +42,12 @@ class LineSegment(val startPoint: Point, val endPoint: Point) :
     }
 
     companion object {
-        private fun slopeAndInterceptFromTwoPoints(a: Point, b: Point): Pair<Double, Double> {
-            val slope = slopeBetweenTwoPoints(a, b)
-            val intercept = interceptFromPointWithSlope(slope, a.x, a.y)
-            return Pair(slope, intercept)
+        fun fromSeveralPoints(points: Collection<PolarPoint>): LineSegment {
+            val line = Line.fromSeveralPoints(points)
+            val sortedPoints = points.sortedWith(compareBy(PolarPoint::angle, PolarPoint::distance))
+            val startPoint = projectOntoLine(sortedPoints.first(), line)
+            val endPoint = projectOntoLine(sortedPoints.last(), line)
+            return LineSegment(line, startPoint, endPoint)
         }
     }
 }

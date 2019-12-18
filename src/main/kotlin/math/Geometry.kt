@@ -4,7 +4,12 @@ import model.geometry.Line
 import model.geometry.LineSegment
 import model.geometry.Point
 import model.geometry.PolarPoint
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.cos
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.sqrt
 
 /** Precomputed value of PI / 2 for performance reasons. */
 const val PIHALF = PI / 2
@@ -39,15 +44,25 @@ private fun intersectTwoLines(a: Line, b: Line): Point? {
     return Point(x, y)
 }
 
-fun distance(p: Point, lineSeg: LineSegment): Double {
-    return distance(p, projectOntoSegment(p, lineSeg))
-}
+fun distance(p: Point, lineSeg: LineSegment): Double =
+    distance(p, projectOntoSegment(p, lineSeg))
 
 private fun projectOntoSegment(p: Point, lineSeg: LineSegment): Point {
-    val lineVec = lineSeg.endPoint - lineSeg.startPoint
-    val length2 = lengthSquared(lineVec.x, lineVec.y)
-    val t = max(0.0, min(1.0, dot(p - lineSeg.startPoint, lineVec) / length2))
+    val t = max(0.0, min(1.0, lineVectorConstantToProjection(p, lineSeg.startPoint, lineSeg.endPoint)))
     return lineSeg.startPoint + (lineSeg.endPoint - lineSeg.startPoint) * t
+}
+
+internal fun projectOntoLine(p: Point, line: Line): Point {
+    val startPoint = Point(0, line.intercept)
+    val endPoint = Point(1, line.slope + line.intercept)
+    val t = lineVectorConstantToProjection(p, startPoint, endPoint)
+    return startPoint + (endPoint - startPoint) * t
+}
+
+private fun lineVectorConstantToProjection(p: Point, startPoint: Point, endPoint: Point): Double {
+    val lineVec = endPoint - startPoint
+    val length2 = lengthSquared(lineVec.x, lineVec.y)
+    return dot(p - startPoint, lineVec) / length2
 }
 
 fun distanceOriginLineToPoint(angle: Double, p: PolarPoint): Double {
