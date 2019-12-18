@@ -8,7 +8,7 @@ import io.kotlintest.tables.row
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.verify
-import math.distanceLineToPoint
+import math.distance
 
 internal class LineTest : FreeSpec({
 
@@ -31,9 +31,9 @@ internal class LineTest : FreeSpec({
 
         "distanceTo Point calls distanceLineToPoint" {
             mockkStatic("math.GeometryKt")
-            every { distanceLineToPoint(l, point) } returns 13.0
+            every { distance(point, l) } returns 13.0
             l.distanceTo(point) shouldBe 13.0
-            verify { distanceLineToPoint(l, point) }
+            verify { distance(point, l) }
         }
 
         "distanceTo Line is 0.0 or not implemented if parallel" {

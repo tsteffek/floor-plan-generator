@@ -1,6 +1,6 @@
 package algorithms
 
-import math.distanceLineToPoint
+import math.distance
 import model.NeighborhoodGraph
 import model.geometry.Line
 import model.geometry.Point
@@ -43,7 +43,7 @@ private tailrec fun <T : Point> findNeighborsOnLine(
     val newLinePoints = linePoints + nearestPoint
 
     val line = Line.fromSeveralPoints(newLinePoints)
-    val maxDistance = newLinePoints.map { distanceLineToPoint(line, it) }.max()!!
+    val maxDistance = newLinePoints.map { distance(it, line) }.max()!!
 
     return if (maxDistance > THRESHOLD) {
         findNeighborsOnLine(linePoints, nearestPoints, takenPoints, graph)
