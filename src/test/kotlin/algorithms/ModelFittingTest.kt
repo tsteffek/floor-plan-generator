@@ -148,7 +148,9 @@ class ModelFittingTest : FreeSpec({
             val pointSets = fitLines(graph)
             pointSets shouldContainExactly targetPointSets
             pointSets.flatten().size shouldBe points.size
-            pointSets.map { Line.fromSeveralPoints(it) } shouldContainExactly targetLines
+            pointSets
+                .filter { it.size > 1 }
+                .map { Line.fromSeveralPoints(it) } shouldContainExactly targetLines
         }
     }
 })

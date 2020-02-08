@@ -26,9 +26,7 @@ tailrec fun <T : Point> fitLines(
     takenPoints.add(startPoint)
 
     val initialNeighbors = LinkedList(getNotTakenNeighbors(startPoint, takenPoints, graph))
-    val line = findNeighborsOnLine(setOf(startPoint), initialNeighbors, takenPoints, graph)
-    if (line.size > 1)
-        lines.add(line)
+    lines.add(findNeighborsOnLine(setOf(startPoint), initialNeighbors, takenPoints, graph))
 
     return fitLines(graph.getObjects() - takenPoints, takenPoints, graph, lines)
 }
