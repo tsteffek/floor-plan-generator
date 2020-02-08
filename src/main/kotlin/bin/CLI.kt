@@ -1,5 +1,6 @@
 package bin
 
+import algorithms.fitLines
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
@@ -8,9 +9,13 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.double
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.sh0nk.matplotlib4j.Plot
+import math.distance
+import model.NeighborhoodGraph
 import model.Scan2D
 import model.Scanner
+import model.geometry.LineSegment
 import java.io.File
+
 
 fun main(args: Array<String>) = CLI().main(args)
 
@@ -77,26 +82,50 @@ class CLI : CliktCommand() {
     override fun run() {
         val file = File(scanPath)
 
-        val scan = Scan2D.fromTSV(
-            file,
-            Scanner(scannerId, incremental, stepAngle, clockwise, qualityMax)
-        )
-        val pointCloud = scan.rotateBy(rotation)
+        val scanner = Scanner(scannerId, incremental, stepAngle, clockwise, qualityMax)
+        val scan = Scan2D.fromTSV(file, scanner)
+        val rotatedScan = Scan2D(scan.rotateBy(rotation), scanner)
+
+        val graph = NeighborhoodGraph.fromPolarPoints(rotatedScan.pointCloud)
+        val lineSegments = fitLines(graph).map { LineSegment.fromSeveralPoints(it) }
 
         if (diagram) {
-            val x = pointCloud.map { it.x }
-            val y = pointCloud.map { it.y }
+            plot(rotatedScan, lineSegments, file)
+        }
+    }
 
-            val plt: Plot = Plot.create()
-            plt.plot().add(x, y, "-")
-            plt.plot().add(x, y, ".")
-            plt.title(file.nameWithoutExtension)
-            plt.show()
+    private fun plot(
+        rotatedScan: Scan2D,
+        lineSegments: List<LineSegment>,
+        file: File
+    ) {
+        val x = rotatedScan.pointCloud.map { it.x }
+        val y = rotatedScan.pointCloud.map { it.y }
 
-            if (!outPath.isNullOrBlank()) {
-                plt.savefig(outPath + file.nameWithoutExtension)
-                plt.executeSilently()
-            }
+        val linePoints = lineSegments.map {
+            Pair(
+                listOf(it.startPoint.x, it.endPoint.x),
+                listOf(it.startPoint.y, it.endPoint.y)
+            )
+        }
+        val labels = lineSegments.map { distance(it.startPoint, it.endPoint) }
+
+        val plt: Plot = Plot.create()
+
+        //            plt.plot().add(x, y, "-")
+        plt.plot().add(x, y, ".").linewidth("0")
+
+        linePoints.forEachIndexed { index, it ->
+            plt.plot().add(it.first, it.second).label(labels[index].toString()).linestyle("-")
+        }
+        plt.legend()
+
+        plt.title(file.nameWithoutExtension)
+        plt.show()
+
+        if (!outPath.isNullOrBlank()) {
+            plt.savefig(outPath + file.nameWithoutExtension)
+            plt.executeSilently()
         }
     }
 }

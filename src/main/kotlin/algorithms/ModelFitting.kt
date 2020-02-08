@@ -6,8 +6,8 @@ import model.geometry.Line
 import model.geometry.Point
 import java.util.LinkedList
 
-/** Threshold for line fitting, defaults to 1mm deviation from the line */
-const val THRESHOLD = 1.0 / 1000.0
+/** Threshold for line fitting, defaults to 1mm deviation from the line. */
+const val THRESHOLD = 1.0 / 100.0
 
 fun <T : Point> fitLines(graph: NeighborhoodGraph<T>): List<Set<T>> =
     fitLines(graph.getObjects(), graph = graph)
@@ -23,9 +23,12 @@ tailrec fun <T : Point> fitLines(
     if (points.isEmpty()) return lines
 
     val startPoint = points.first()
+    takenPoints.add(startPoint)
 
     val initialNeighbors = LinkedList(getNotTakenNeighbors(startPoint, takenPoints, graph))
-    lines.add(findNeighborsOnLine(setOf(startPoint), initialNeighbors, takenPoints, graph))
+    val line = findNeighborsOnLine(setOf(startPoint), initialNeighbors, takenPoints, graph)
+    if (line.size > 1)
+        lines.add(line)
 
     return fitLines(graph.getObjects() - takenPoints, takenPoints, graph, lines)
 }
