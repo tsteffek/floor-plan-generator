@@ -115,8 +115,8 @@ class CLI : CliktCommand() {
         //            plt.plot().add(x, y, "-")
         plt.plot().add(x, y, ".").linewidth("0")
 
-        linePoints.forEachIndexed { index, it ->
-            plt.plot().add(it.first, it.second).label(labels[index].toString()).linestyle("-")
+        linePoints.forEachIndexed { index, (xPoints, yPoints) ->
+            plt.plot().add(xPoints, yPoints).label(labels[index].toString()).linestyle("-")
         }
         plt.legend()
 
