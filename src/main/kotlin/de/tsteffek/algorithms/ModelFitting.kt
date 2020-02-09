@@ -6,7 +6,7 @@ import de.tsteffek.model.geometry.Line
 import de.tsteffek.model.geometry.Point
 import java.util.LinkedList
 
-/** Threshold for line fitting, defaults to 1mm deviation from the line */
+/** Threshold for line fitting, defaults to 1mm deviation from the line. */
 const val THRESHOLD = 1.0 / 1000.0
 
 /**

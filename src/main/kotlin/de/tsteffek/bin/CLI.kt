@@ -12,8 +12,10 @@ import de.tsteffek.model.Scan2D
 import de.tsteffek.model.Scanner
 import java.io.File
 
+/** Starts the command line interface. */
 fun main(args: Array<String>) = CLI().main(args)
 
+/** Contains the command line interface. */
 class CLI : CliktCommand() {
 
     companion object {

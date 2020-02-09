@@ -79,12 +79,7 @@ data class NeighborhoodGraph<T : GeometricObject>(
                 sortedPoints
                     .withIndex()
                     .associate { (index, point) ->
-                        Pair(point,
-                            computeClosest(
-                                index,
-                                sortedPoints
-                            )
-                        )
+                        Pair(point, computeClosest(index, sortedPoints))
                     }
 
             return NeighborhoodGraph(
@@ -96,7 +91,7 @@ data class NeighborhoodGraph<T : GeometricObject>(
 
         private fun computeClosest(index: Int, points: List<PolarPoint>): Set<PolarPoint> {
             val it = points[index % points.size]
-            val halfSize = (points.size * 0.5).toInt()
+            val halfSize = points.size / 2
             val forwardIterator =
                 points.asCyclicSequence(index + 1, index + halfSize + points.size % 2).iterator()
             val backwardIterator =
