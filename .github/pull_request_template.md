@@ -1,8 +1,10 @@
-\<type>(\<scope>): \<subject>
+```{html}
+<type>(<scope>): <subject>
 
-\<body>
+<body>
 
-\<footer>
+<footer>
+```
 
 ## Type
 Must be one of the following:
