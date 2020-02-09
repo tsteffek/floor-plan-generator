@@ -49,13 +49,13 @@ open class Line(val slope: Double, val intercept: Double) : GeometricObject {
         fun fromTwoPoints(a: Point, b: Point): Line =
             fromSlopeAndPoint(slopeBetweenTwoPoints(a, b), a)
 
-        internal fun slopeBetweenTwoPoints(a: Point, b: Point): Double =
+        private fun slopeBetweenTwoPoints(a: Point, b: Point): Double =
             (a.y - b.y) / (a.x - b.x)
 
         internal fun fromSlopeAndPoint(slope: Double, a: Point): Line =
             Line(slope, interceptFromPointWithSlope(slope, a.x, a.y))
 
-        internal fun interceptFromPointWithSlope(slope: Double, x: Double, y: Double): Double =
+        private fun interceptFromPointWithSlope(slope: Double, x: Double, y: Double): Double =
             y - slope * x
 
         /**
