@@ -32,7 +32,7 @@ internal class LineTest : FreeSpec({
         val parallelLine = Line(1, 1)
 
         "distanceTo Point calls distanceLineToPoint" {
-            mockkStatic("math.GeometryKt")
+            mockkStatic("de.tsteffek.math.GeometryKt")
             every { distanceLineToPoint(l, point) } returns 13.0
             l.distanceTo(point) shouldBe 13.0
             verify { distanceLineToPoint(l, point) }
