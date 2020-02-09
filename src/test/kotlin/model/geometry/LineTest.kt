@@ -1,5 +1,7 @@
 package model.geometry
 
+import de.tsteffek.model.geometry.Line
+import de.tsteffek.model.geometry.Point
 import io.kotlintest.data.suspend.forall
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -8,7 +10,7 @@ import io.kotlintest.tables.row
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.verify
-import math.distanceLineToPoint
+import de.tsteffek.math.distanceLineToPoint
 
 internal class LineTest : FreeSpec({
 

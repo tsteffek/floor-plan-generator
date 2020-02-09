@@ -1,11 +1,12 @@
 package algorithms
 
+import de.tsteffek.algorithms.fitLines
 import io.kotlintest.matchers.collections.shouldContainExactly
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.shouldBe
-import model.NeighborhoodGraph
-import model.geometry.Line
-import model.geometry.Point
+import de.tsteffek.model.NeighborhoodGraph
+import de.tsteffek.model.geometry.Line
+import de.tsteffek.model.geometry.Point
 
 class ModelFittingTest : FreeSpec({
 

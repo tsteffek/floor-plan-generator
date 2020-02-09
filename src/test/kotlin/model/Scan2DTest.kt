@@ -2,16 +2,14 @@ package model
 
 import io.kotlintest.assertSoftly
 import io.kotlintest.data.forall
-import io.kotlintest.matchers.asClue
-import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldContainExactly
-import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.tables.*
-import model.geometry.Point
-import model.geometry.PolarPoint
+import de.tsteffek.model.geometry.PolarPoint
+import de.tsteffek.model.Scan2D
+import de.tsteffek.model.Scanner
 import mu.KotlinLogging
 import java.lang.IllegalArgumentException
 import kotlin.math.sqrt
@@ -22,7 +20,8 @@ class Scan2DTest : FreeSpec({
     "companion object" - {
         "fromTSV" - {
             "from total values" - {
-                val testScanner = Scanner("TestScanner-Total", false, 45.0, false, 100)
+                val testScanner =
+                    Scanner("TestScanner-Total", false, 45.0, false, 100)
                 val tsv = """
                     id	step size	distance	quality
                     1	0	1	1
@@ -56,7 +55,8 @@ class Scan2DTest : FreeSpec({
             }
 
             "from incremental values" - {
-                val testScannerInc = Scanner("TestScanner-Inc", true, 45.0, false, 100)
+                val testScannerInc =
+                    Scanner("TestScanner-Inc", true, 45.0, false, 100)
                 val tsvInc = """
                     id	step size	distance	quality
                     13	0	1	1
@@ -90,7 +90,8 @@ class Scan2DTest : FreeSpec({
             }
 
             "from clockwise data" - {
-                val testScanner = Scanner("TestScanner-Total", false, 45.0, true, 100)
+                val testScanner =
+                    Scanner("TestScanner-Total", false, 45.0, true, 100)
                 val tsv = """
                     id	step size	distance	quality
                     1	0	1	1
@@ -125,7 +126,8 @@ class Scan2DTest : FreeSpec({
 
             "filters quality above threshold" {
                 val qualityMax = 100
-                val testScanner = Scanner("TestScanner-Total", false, 45.0, false, qualityMax)
+                val testScanner =
+                    Scanner("TestScanner-Total", false, 45.0, false, qualityMax)
                 val tsv = """
                     id	step size	distance	quality
                     1	0	1	1
@@ -147,7 +149,8 @@ class Scan2DTest : FreeSpec({
 
             "filters NaN distance or quality" {
                 val qualityMax = 100
-                val testScanner = Scanner("TestScanner-Total", false, 45.0, false, qualityMax)
+                val testScanner =
+                    Scanner("TestScanner-Total", false, 45.0, false, qualityMax)
                 val tsv = """
                     id	step size	distance	quality
                     1	0	1	1
@@ -170,7 +173,8 @@ class Scan2DTest : FreeSpec({
             }
 
             "throws error on missing id" {
-                val testScanner = Scanner("TestScanner-Total", false, 45.0, false, 100)
+                val testScanner =
+                    Scanner("TestScanner-Total", false, 45.0, false, 100)
                 forall(
                     row(
                         """
@@ -192,7 +196,8 @@ class Scan2DTest : FreeSpec({
             }
 
             "throws error on missing step size" {
-                val testScanner = Scanner("TestScanner-Total", false, 45.0, false, 100)
+                val testScanner =
+                    Scanner("TestScanner-Total", false, 45.0, false, 100)
                 forall(
                     row(
                         """

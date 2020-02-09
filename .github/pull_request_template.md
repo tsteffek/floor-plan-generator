@@ -1,4 +1,4 @@
-```
+```{html}
 \<type>(\<scope>): \<subject>
 
 \<body>

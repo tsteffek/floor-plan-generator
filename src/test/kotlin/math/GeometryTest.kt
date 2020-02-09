@@ -5,9 +5,10 @@ import io.kotlintest.matchers.doubles.plusOrMinus
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.tables.row
-import model.geometry.Line
-import model.geometry.Point
-import model.geometry.PolarPoint
+import de.tsteffek.model.geometry.Line
+import de.tsteffek.model.geometry.Point
+import de.tsteffek.model.geometry.PolarPoint
+import de.tsteffek.math.*
 import kotlin.math.PI
 import kotlin.math.sqrt
 
@@ -24,7 +25,10 @@ internal class GeometryTest : FreeSpec({
             row(1.0, 1.0, sqrt(2.0)),
             row(-1.0, -1.0, sqrt(2.0))
         ) { x, y, length ->
-            lengthOf(x, y) shouldBe (length plusOrMinus PRECISION)
+            lengthOf(
+                x,
+                y
+            ) shouldBe (length plusOrMinus PRECISION)
         }
     }
 
@@ -43,11 +47,17 @@ internal class GeometryTest : FreeSpec({
 
     "distanceOriginLineToPoint" {
         forall(
-            row(Math.toRadians(90.0), PolarPoint(Math.toRadians(45.0), sqrt(2.0), 0), 1.0),
-            row(Math.toRadians(180.0), PolarPoint(Math.toRadians(45.0), sqrt(2.0), 0), sqrt(2.0)),
-            row(Math.toRadians(270.0), PolarPoint(Math.toRadians(225.0), sqrt(2.0), 0), 1.0)
+            row(Math.toRadians(90.0),
+                PolarPoint(Math.toRadians(45.0), sqrt(2.0), 0), 1.0),
+            row(Math.toRadians(180.0),
+                PolarPoint(Math.toRadians(45.0), sqrt(2.0), 0), sqrt(2.0)),
+            row(Math.toRadians(270.0),
+                PolarPoint(Math.toRadians(225.0), sqrt(2.0), 0), 1.0)
         ) { angle, point, distance ->
-            distanceOriginLineToPoint(angle, point) shouldBe (distance plusOrMinus PRECISION)
+            distanceOriginLineToPoint(
+                angle,
+                point
+            ) shouldBe (distance plusOrMinus PRECISION)
         }
     }
 
@@ -75,7 +85,10 @@ internal class GeometryTest : FreeSpec({
                 1.0
             )
         ) { line, point, distance ->
-            distanceLineToPoint(line, point) shouldBe (distance plusOrMinus PRECISION)
+            distanceLineToPoint(
+                line,
+                point
+            ) shouldBe (distance plusOrMinus PRECISION)
         }
     }
 })

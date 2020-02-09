@@ -57,6 +57,7 @@ tasks {
             skipDeprecated = true
             skipEmptyPackages = true
             jdkVersion = 8
+            includes = listOf("packages.md")
         }
     }
 
@@ -69,6 +70,7 @@ tasks {
             skipDeprecated = true
             skipEmptyPackages = true
             jdkVersion = 8
+            includes = listOf("packages.md")
         }
 
         doLast { // move the docs from ./docs/docs to ./docs

@@ -8,11 +8,11 @@ import io.kotlintest.tables.row
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.verifyAll
-import math.PRECISION
-import math.distanceLineToPoint
-import math.distancePointToPoint
-import model.geometry.Line
-import model.geometry.Point
+import de.tsteffek.math.PRECISION
+import de.tsteffek.math.distanceLineToPoint
+import de.tsteffek.math.distancePointToPoint
+import de.tsteffek.model.geometry.Line
+import de.tsteffek.model.geometry.Point
 
 internal class PointTest : FreeSpec({
 
@@ -57,7 +57,12 @@ internal class PointTest : FreeSpec({
 
         forall(
             row(point),
-            row(Point(angle, distance + PRECISION)),
+            row(
+                Point(
+                    angle,
+                    distance + PRECISION
+                )
+            ),
             row(Point(angle, distance))
         ) { targetPoint ->
             point shouldBe targetPoint

@@ -1,8 +1,0 @@
-[docs](../../index.md) / [model.geometry](../index.md) / [Line](index.md) / [distanceTo](./distance-to.md)
-
-# distanceTo
-
-`fun distanceTo(other: `[`GeometricObject`](../-geometric-object/index.md)`): `[`Double`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html)
-
-Computes the distance to another [GeometricObject](../-geometric-object/index.md).
-

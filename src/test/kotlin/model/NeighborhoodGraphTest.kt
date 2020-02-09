@@ -8,8 +8,9 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 import io.kotlintest.tables.row
-import model.geometry.Point
-import model.geometry.PolarPoint
+import de.tsteffek.model.geometry.Point
+import de.tsteffek.model.geometry.PolarPoint
+import de.tsteffek.model.NeighborhoodGraph
 import mu.KotlinLogging
 
 private val logger by lazy { KotlinLogging.logger {} }
@@ -19,12 +20,24 @@ class NeighborhoodGraphTest : FreeSpec({
     "getSize" {
         forall(
             row(
-                listOf(Point(1, 0), Point(2, 0)), 2
+                listOf(
+                    Point(1, 0),
+                    Point(2, 0)
+                ), 2
             ), row(
-                listOf(Point(1, 0), Point(2, 0), Point(3, 0)), 3
+                listOf(
+                    Point(1, 0),
+                    Point(2, 0),
+                    Point(3, 0)
+                ), 3
             ),
             row(
-                listOf(Point(1, 0), Point(2, 0), Point(3, 0), Point(4, 0)), 4
+                listOf(
+                    Point(1, 0),
+                    Point(2, 0),
+                    Point(3, 0),
+                    Point(4, 0)
+                ), 4
             )
         ) { points, targetSize ->
             NeighborhoodGraph.usingBruteForce(points).getSize() shouldBe targetSize

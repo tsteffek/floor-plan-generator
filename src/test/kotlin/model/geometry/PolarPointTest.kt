@@ -7,8 +7,8 @@ import io.kotlintest.tables.forAll
 import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
 import io.kotlintest.tables.table
-import math.PRECISION
-import model.geometry.PolarPoint
+import de.tsteffek.math.PRECISION
+import de.tsteffek.model.geometry.PolarPoint
 import kotlin.math.pow
 import kotlin.math.sqrt
 
