@@ -9,15 +9,19 @@ import java.util.LinkedList
 /** Threshold for line fitting, defaults to 1mm deviation from the line */
 const val THRESHOLD = 1.0 / 1000.0
 
+/**
+ * Tries to fit lines onto the [T]s in a [NeighborhoodGraph] [graph] using a very basic, one-iteration method (used as initialisation step for more complex algorithms).
+ * @return a list containing sets of points which have been fitted together (might contain sets with just one [T])
+ */
 fun <T : Point> fitLines(graph: NeighborhoodGraph<T>): List<Set<T>> =
-    fitLines(graph.getObjects(), graph = graph)
+    fitLines(graph, graph.getObjects())
 
 // this warns, that tailrec parameter defaults will be initialized in reverse order - which doesn't matter here.
 @Suppress("TAILREC_WITH_DEFAULTS")
-tailrec fun <T : Point> fitLines(
-    points: Set<T>,
-    takenPoints: MutableSet<T> = HashSet(),
+private tailrec fun <T : Point> fitLines(
     graph: NeighborhoodGraph<T>,
+    points: Set<T> = graph.getObjects(),
+    takenPoints: MutableSet<T> = HashSet(),
     lines: MutableList<Set<T>> = mutableListOf()
 ): List<Set<T>> {
     if (points.isEmpty()) return lines
@@ -27,7 +31,7 @@ tailrec fun <T : Point> fitLines(
     val initialNeighbors = LinkedList(getNotTakenNeighbors(startPoint, takenPoints, graph))
     lines.add(findNeighborsOnLine(setOf(startPoint), initialNeighbors, takenPoints, graph))
 
-    return fitLines(graph.getObjects() - takenPoints, takenPoints, graph, lines)
+    return fitLines(graph, graph.getObjects() - takenPoints, takenPoints, lines)
 }
 
 private tailrec fun <T : Point> findNeighborsOnLine(

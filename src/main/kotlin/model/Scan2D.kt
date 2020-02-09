@@ -8,11 +8,18 @@ import java.util.concurrent.atomic.AtomicInteger
 
 private val logger by lazy { KotlinLogging.logger {} }
 
+/**
+ * An object containing the results of a radial 2D lidar scan.
+ * @property pointCloud a [List] of detected [PolarPoint]s
+ * @property scanner the [Scanner] used to create the data
+ */
 class Scan2D(val pointCloud: List<PolarPoint>, private val scanner: Scanner) {
 
+    /** Rotates all the points by [angle]. */
     fun rotateBy(angle: Double): List<PolarPoint> =
         pointCloud.map { it.rotateBy(angle) }
 
+    /** Returns this object as TSV [String]. */
     fun toTSV(): String {
         val sb = StringBuilder()
         sb.appendln(scanner.toString())
@@ -23,18 +30,30 @@ class Scan2D(val pointCloud: List<PolarPoint>, private val scanner: Scanner) {
 
     companion object {
 
-        data class ScanData(
+        private data class ScanData(
             val id: Int,
             val amountOfSteps: Double,
             val distance: Double?,
             val quality: Int?
         )
 
+        /**
+         * Creates a [Scan2D] from a tsv [File].
+         *
+         * Assumes a header line with the values matching the keys in the scanner.
+         * @param scanner the [Scanner] used to create the data
+         */
         fun fromTSV(tsvFile: File, scanner: Scanner): Scan2D {
             logger.info { "Reading from file $tsvFile..." }
             return fromMap(readFromTSV(tsvFile), scanner)
         }
 
+        /**
+         * Creates a [Scan2D] from a [String] leading to a tsv file
+         *
+         * Assumes a header line with the values matching the keys in the scanner.
+         * @param scanner the [Scanner] used to create the data
+         */
         fun fromTSV(tsvString: String, scanner: Scanner): Scan2D {
             logger.debug { "Reading TSV: \n$tsvString" }
             return fromMap(readFromTSV(tsvString), scanner)

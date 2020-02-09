@@ -1,14 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.kotlin.dsl.startScripts
+import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     kotlin("jvm") version "1.3.50"
     application
     jacoco
+    id("org.jetbrains.dokka") version "0.10.0"
 }
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 configurations.forEach { it.exclude("org.slf4j", "slf4j-log4j12") }
@@ -41,21 +44,56 @@ application {
     mainClassName = "bin/CLIKt"
 }
 
-tasks.jacocoTestReport {
-    reports {
-        xml.isEnabled = true
-        html.isEnabled = false
+tasks {
+    startScripts {
+        applicationName = "fpg"
     }
-}
 
-tasks.startScripts {
-    applicationName = "fpg"
-}
+    register<DokkaTask>("htmlDokka") {
+        outputFormat = "html"
+        outputDirectory = "$buildDir/dokka"
+        configuration {
+            includeNonPublic = false
+            skipDeprecated = true
+            skipEmptyPackages = true
+            jdkVersion = 8
+        }
+    }
 
-val test by tasks.getting(Test::class) {
-    useJUnitPlatform { }
-}
+    val dokka by getting(DokkaTask::class) {
+        outputFormat = "gfm"
+        outputDirectory = "docs"
+        configuration {
+            moduleName = "docs"
+            includeNonPublic = false
+            skipDeprecated = true
+            skipEmptyPackages = true
+            jdkVersion = 8
+        }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+        doLast { // move the docs from ./docs/docs to ./docs
+            ant.withGroovyBuilder {
+                "move"("file" to "./docs/docs", "todir" to ".")
+            }
+        }
+    }
+
+    jar {
+        dependsOn(dokka, "htmlDokka")
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.isEnabled = true
+            html.isEnabled = false
+        }
+    }
+
+    val test by getting(Test::class) {
+        useJUnitPlatform { }
+    }
+
+    withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "1.8"
+    }
 }

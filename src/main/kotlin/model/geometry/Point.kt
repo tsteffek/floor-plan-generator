@@ -4,6 +4,11 @@ import math.PRECISION
 import math.distanceLineToPoint
 import math.distancePointToPoint
 
+/**
+ * The [GeometricObject] resembling a simple 2D point.
+ * @property x location on the x-axis
+ * @property y location on the y-axis
+ */
 open class Point(val x: Double, val y: Double) : GeometricObject {
 
     constructor(x: Int, y: Double) : this(x.toDouble(), y)

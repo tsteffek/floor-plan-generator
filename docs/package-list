@@ -1,0 +1,13 @@
+$dokka.format:gfm
+$dokka.linkExtension:md
+$dokka.location:model$asCyclicReversed(kotlin.collections.List((model.asCyclicReversed.T)), kotlin.Int, kotlin.Int)model/kotlin.collections.-list/as-cyclic-reversed.md
+$dokka.location:model$asCyclicSequence(kotlin.collections.List((model.asCyclicSequence.T)), kotlin.Int, kotlin.Int)model/kotlin.collections.-list/as-cyclic-sequence.md
+$dokka.location:model$filterAndCount(kotlin.collections.Map((model.filterAndCount.K, model.filterAndCount.V)), java.util.concurrent.atomic.AtomicInteger, kotlin.Function1((kotlin.collections.Map.Entry((model.filterAndCount.K, model.filterAndCount.V)), kotlin.Boolean)))model/kotlin.collections.-map/filter-and-count.md
+$dokka.location:model$filterAndCount(kotlin.sequences.Sequence((model.filterAndCount.T)), java.util.concurrent.atomic.AtomicInteger, kotlin.Function1((model.filterAndCount.T, kotlin.Boolean)))model/kotlin.sequences.-sequence/filter-and-count.md
+$dokka.location:model$mean(kotlin.collections.Collection((kotlin.Double)))model/kotlin.collections.-collection/mean.md
+algorithms
+bin
+io
+math
+model
+model.geometry

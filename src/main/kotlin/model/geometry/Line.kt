@@ -5,6 +5,11 @@ import math.distanceLineToPoint
 import model.mean
 import kotlin.math.pow
 
+/**
+ * The [GeometricObject] resembling a simple line in slope-intercept-form.
+ * @property slope the slope of the line, i.e. the increase along the y-axis per step along the x-axis.
+ * @property intercept y-value of the interception point of this line and the y-axis
+ */
 class Line(val slope: Double, val intercept: Double) : GeometricObject {
 
     constructor(slope: Int, intercept: Double) : this(slope.toDouble(), intercept)
@@ -45,17 +50,20 @@ class Line(val slope: Double, val intercept: Double) : GeometricObject {
     }
 
     companion object {
+        /** Computes the line between two [Point]s [a] and [b]. */
         fun fromTwoPoints(a: Point, b: Point): Line =
             fromSlopeAndPoint((a.y - b.y) / (a.x - b.x), a)
 
-        internal fun fromSlopeAndPoint(slope: Double, a: Point): Line =
-            fromSlopeAndPoint(slope, a.x, a.y)
+        /** Computes the line using a starting [point] and a [slope] */
+        internal fun fromSlopeAndPoint(slope: Double, point: Point): Line =
+            fromSlopeAndPoint(slope, point.x, point.y)
 
         private fun fromSlopeAndPoint(slope: Double, x: Double, y: Double): Line =
             Line(slope, y - slope * x)
 
         /**
-         * Least Squares following https://www.varsitytutors.com/hotmath/hotmath_help/topics/line-of-best-fit
+         * Fits a line between several [points].
+         * Algorithm used: Least Squares following https://www.varsitytutors.com/hotmath/hotmath_help/topics/line-of-best-fit
          */
         fun fromSeveralPoints(points: Collection<Point>): Line {
             val xMean = points.map { it.x }.mean()
