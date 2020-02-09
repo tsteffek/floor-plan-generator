@@ -5,3 +5,5 @@
 
 # floor-plan-generator
 Backend for a service that turns input of a 2d lidar scan into a floorplan
+
+View our [docs](docs/index.md)!
