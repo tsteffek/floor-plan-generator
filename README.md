@@ -15,9 +15,9 @@ View our [docs](docs/index.md)!
 
 1. Component diagram of the target architecture for the whole application (simplified, to explain my brother what's supposed to happen)
 ![future components](src/docs/future_components.png)
-2. Overview over this module
+2. Class diagram as overview for this module
 ![class diagram](src/docs/mainuml.png)
-3. What the target sequence should look like of this module
+3. Sequence diagram displaying the target sequence for this module
 ![sequence diagram](src/docs/sequence.png)
 
 ## 2. Metrics (see badges at top)
