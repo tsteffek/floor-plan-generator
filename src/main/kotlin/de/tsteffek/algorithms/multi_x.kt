@@ -1,5 +1,5 @@
-//package model.geometry
-//
+package de.tsteffek.algorithms
+
 ///**
 // * Input: P – data points
 // * Output: H∗– model instances, L∗– labeling

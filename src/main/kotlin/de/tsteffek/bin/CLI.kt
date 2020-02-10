@@ -1,6 +1,5 @@
 package de.tsteffek.bin
 
-import de.tsteffek.algorithms.fitLines
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
@@ -9,6 +8,7 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.double
 import com.github.ajalt.clikt.parameters.types.int
 import com.github.sh0nk.matplotlib4j.Plot
+import de.tsteffek.algorithms.fitLines
 import de.tsteffek.math.distance
 import de.tsteffek.model.NeighborhoodGraph
 import de.tsteffek.model.Scan2D

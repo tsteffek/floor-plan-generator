@@ -62,47 +62,32 @@ class Scan2D(val pointCloud: List<PolarPoint>, private val scanner: Scanner) {
         }
 
         private fun fromMap(map: List<Map<String, String>>, scanner: Scanner): Scan2D {
-            var parsedData = map
-                .mapIndexed { index, dataObject ->
-                    val id = dataObject[scanner.idKey]?.toInt()
-                    val amountOfSteps = dataObject[scanner.stepSizeKey]?.toDoubleOrNull()
-                    val distance = dataObject[scanner.distanceKey]?.toDoubleOrNull()
-                    val quality = dataObject[scanner.qualityKey]?.toIntOrNull()
-
-                    requireNotNull(id)
-                    { "${scanner.idKey} missing in CSV line ${index + 1}" }
-                    require(amountOfSteps != null && !amountOfSteps.isNaN())
-                    { "${scanner.stepSizeKey} missing in CSV line ${index + 1}" }
-
-                    ScanData(id, amountOfSteps, distance, quality)
-                }
-
-            if (scanner.incremental) parsedData = toTotalStepSizes(parsedData)
-
+            val parsedData = parseToScanData(map, scanner.tsvKeys, scanner.incremental)
             val points = calculatePoints(parsedData, scanner)
             return Scan2D(points, scanner)
         }
 
+        private fun parseToScanData(
+            map: List<Map<String, String>>,
+            tsvKeys: TsvKeys,
+            incremental: Boolean
+        ): List<ScanData> {
+            val parsedData = map
+                .mapIndexed { index, dataObject ->
+                    val id = dataObject[tsvKeys.idKey]?.toInt()
+                    val amountOfSteps = dataObject[tsvKeys.stepSizeKey]?.toDoubleOrNull()
+                    val distance = dataObject[tsvKeys.distanceKey]?.toDoubleOrNull()
+                    val quality = dataObject[tsvKeys.qualityKey]?.toIntOrNull()
 
-        private fun calculatePoints(data: List<ScanData>, scanner: Scanner)
-                : List<PolarPoint> {
-            val countNull = AtomicInteger(0)
-            val countQuality = AtomicInteger(0)
+                    requireNotNull(id)
+                    { "${tsvKeys.idKey} missing in TSV line ${index + 1}" }
+                    require(amountOfSteps != null && !amountOfSteps.isNaN())
+                    { "${tsvKeys.stepSizeKey} missing in TSV line ${index + 1}" }
 
-            val points = data
-                .asSequence()
-                .filterAndCount(countNull) { it.distance !== null && !it.distance.isNaN() && it.quality !== null }
-                .filterAndCount(countQuality) { it.quality!! < scanner.qualityMax }
-                .map {
-                    val clockwise = if (scanner.clockwise) -1 else 1
-                    val angleInRad = Math.toRadians(it.amountOfSteps * scanner.stepAngle * clockwise)
-                    PolarPoint(angleInRad, it.distance!!, it.quality!!)
-                }.toList()
-
-            logger.info {
-                "skipped points: $countNull [NaN], $countQuality [quality > ${scanner.qualityMax}] out of ${data.size}"
-            }
-            return points
+                    ScanData(id, amountOfSteps, distance, quality)
+                }
+            return if (!incremental) parsedData
+            else toTotalStepSizes(parsedData)
         }
 
         private fun toTotalStepSizes(rawData: List<ScanData>): List<ScanData> {
@@ -113,6 +98,37 @@ class Scan2D(val pointCloud: List<PolarPoint>, private val scanner: Scanner) {
                     stepSizeSum += it.amountOfSteps
                     ScanData(it.id, stepSizeSum, it.distance, it.quality)
                 }
+        }
+
+        private fun calculatePoints(data: List<ScanData>, scanner: Scanner)
+                : List<PolarPoint> {
+            val counterNull = AtomicInteger(0)
+            val counterQuality = AtomicInteger(0)
+
+            val nullCountFilter = filterAndCount<ScanData>(counterNull) {
+                it.distance !== null && !it.distance.isNaN() && it.quality !== null
+            }
+            val qualityCountFilter = filterAndCount<ScanData>(counterQuality) {
+                it.quality!! < scanner.qualityMax
+            }
+
+            val points = data
+                .asSequence()
+                .filter(nullCountFilter)
+                .filter(qualityCountFilter)
+//                .filterAndCount(countNull) { it.distance !== null && !it.distance.isNaN() && it.quality !== null }
+//                .filterAndCount(countQuality) { it.quality!! < scanner.qualityMax }
+                .map {
+                    val clockwise = if (scanner.clockwise) -1 else 1
+                    val angleInRad = Math.toRadians(it.amountOfSteps * scanner.stepAngle * clockwise)
+                    PolarPoint(angleInRad, it.distance!!, it.quality!!)
+                }.toList()
+
+            logger.info {
+                "skipped points: $counterNull [NaN], $counterQuality [quality > ${scanner.qualityMax}] " +
+                        "out of ${data.size}"
+            }
+            return points
         }
     }
 }

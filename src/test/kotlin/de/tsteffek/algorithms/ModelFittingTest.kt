@@ -19,7 +19,7 @@ class ModelFittingTest : FreeSpec({
             val targetLines = listOf(
                 Line(1, 4)
             )
-            val graph = NeighborhoodGraph.usingBruteForce(points)
+            val graph = NeighborhoodGraph.fromBruteForce(points)
             val lines = fitLines(graph)
             lines.first() shouldContainExactly points
             lines.flatMap { it.asIterable() }.size shouldBe points.size
@@ -43,7 +43,7 @@ class ModelFittingTest : FreeSpec({
                 Line(1, 4),
                 Line(-1.5, 4)
             )
-            val graph = NeighborhoodGraph.usingBruteForce(points)
+            val graph = NeighborhoodGraph.fromBruteForce(points)
             val pointSets = fitLines(graph)
             pointSets shouldContainExactly targetPointSets
             pointSets.flatten().size shouldBe points.size
@@ -73,7 +73,7 @@ class ModelFittingTest : FreeSpec({
                 Line(-1.5, 4),
                 Line(-1, -80)
             )
-            val graph = NeighborhoodGraph.usingBruteForce(points)
+            val graph = NeighborhoodGraph.fromBruteForce(points)
             val pointSets = fitLines(graph)
             pointSets shouldContainExactly targetPointSets
             pointSets.flatten().size shouldBe points.size
@@ -121,7 +121,7 @@ class ModelFittingTest : FreeSpec({
                 Line(-1.5, 4),
                 Line(-1, -80)
             )
-            val graph = NeighborhoodGraph.usingBruteForce(points)
+            val graph = NeighborhoodGraph.fromBruteForce(points)
             val pointSets = fitLines(graph)
             pointSets shouldContainExactly targetPointSets
             pointSets.flatten().size shouldBe points.size
@@ -143,7 +143,7 @@ class ModelFittingTest : FreeSpec({
             val targetLines = listOf(
                 Line(1, 4)
             )
-            val graph = NeighborhoodGraph.usingBruteForce(points)
+            val graph = NeighborhoodGraph.fromBruteForce(points)
             val pointSets = fitLines(graph)
             pointSets shouldContainExactly targetPointSets
             pointSets.flatten().size shouldBe points.size

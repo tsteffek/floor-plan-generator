@@ -16,9 +16,6 @@ const val PIHALF = PI / 2
 /** Precision used for various geometric similarity checks. */
 const val PRECISION = 1e-8
 
-fun dot(a: Point, b: Point): Double =
-    a.x * b.x + a.y * b.y
-
 /**
  * Calculates the length of a 2-dimensional vector [[x], [y]].
  */
@@ -79,6 +76,9 @@ private fun lineVectorConstantToProjection(p: Point, startPoint: Point, endPoint
     val length2 = lengthSquared(lineVec.x, lineVec.y)
     return dot(p - startPoint, lineVec) / length2
 }
+
+private fun dot(a: Point, b: Point): Double =
+    a.x * b.x + a.y * b.y
 
 /**
  * Calculates the shortest distance between a line going through the origin and

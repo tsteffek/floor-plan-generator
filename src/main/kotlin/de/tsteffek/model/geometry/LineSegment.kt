@@ -48,6 +48,12 @@ class LineSegment(line: Line, val startPoint: Point, val endPoint: Point) :
     }
 
     companion object {
+        /**
+         * Fits a line between several [PolarPoint]s.
+         * Utilizes the natural ordering of PolarPoints to determine ending and starting point.
+         * Algorithm used: Least Squares following
+         * https://www.varsitytutors.com/hotmath/hotmath_help/topics/line-of-best-fit
+         */
         fun fromSeveralPoints(points: Collection<PolarPoint>): LineSegment {
             val line = Line.fromSeveralPoints(points)
             val sortedPoints = points.sortedWith(compareBy(PolarPoint::angle, PolarPoint::distance))

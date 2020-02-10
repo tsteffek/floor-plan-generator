@@ -3,18 +3,26 @@ package de.tsteffek.model.geometry
 import de.tsteffek.math.PRECISION
 import de.tsteffek.math.distance
 
+/**
+ * The [GeometricObject] resembling a simple 2D point.
+ * @property x location on the x-axis
+ * @property y location on the y-axis
+ */
 open class Point(val x: Double, val y: Double) : GeometricObject {
 
     constructor(x: Int, y: Double) : this(x.toDouble(), y)
     constructor(x: Double, y: Int) : this(x, y.toDouble())
     constructor(x: Int, y: Int) : this(x.toDouble(), y.toDouble())
 
+    /** Realises classical vector addition */
     operator fun plus(other: Point): Point =
         Point(x + other.x, y + other.y)
 
+    /** Realises classical vector subtraction */
     operator fun minus(other: Point): Point =
         Point(x - other.x, y - other.y)
 
+    /** Realises classical scalar multiplication */
     operator fun times(constant: Double): Point =
         Point(x * constant, y * constant)
 

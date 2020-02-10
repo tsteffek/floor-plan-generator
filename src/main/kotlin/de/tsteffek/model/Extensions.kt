@@ -23,6 +23,19 @@ inline fun <T> Sequence<T>.filterAndCount(
         }
     }
 
+/** Higher order galore: Takes functions, returns functions, works,
+ * but isn't as clean as my original approach in my opinion */
+inline fun <T> filterAndCount(
+    counter: AtomicInteger, crossinline predicate: (T) -> Boolean
+): (T) -> Boolean = {
+    if (predicate(it)) {
+        true
+    } else {
+        counter.incrementAndGet()
+        false
+    }
+}
+
 /**
  * Returns a new map containing all key-value pairs matching the given
  * [predicate] while counting every *mismatch*
@@ -50,13 +63,13 @@ inline fun <K, V> Map<out K, V>.filterAndCount(
  *
  * Will cycle if necessary.
  * @param startingIndex index to start at \[inclusive\]
- * @param endIndex index to stop at \[inclusive\]
+ * @param endIndex index to stop at \[exclusive\]
  * @receiver [List]<[T]>
  */
 fun <T : Any> List<T>.asCyclicSequence(startingIndex: Int, endIndex: Int): Sequence<T> {
     var i = startingIndex
     return generateSequence {
-        if (i <= endIndex) this[Math.floorMod(i++, this.size)]
+        if (i < endIndex) this[Math.floorMod(i++, this.size)]
         else null
     }
 }
@@ -67,13 +80,13 @@ fun <T : Any> List<T>.asCyclicSequence(startingIndex: Int, endIndex: Int): Seque
  *
  * Will cycle if necessary.
  * @param startingIndex index to start at \[inclusive\]
- * @param endIndex index to stop at \[inclusive\]
+ * @param endIndex index to stop at \[exclusive\]
  * @receiver [List]<[T]>
  */
 fun <T : Any> List<T>.asCyclicReversed(startingIndex: Int, endIndex: Int): Sequence<T> {
     var i = startingIndex
     return generateSequence {
-        if (i >= endIndex) this[Math.floorMod(i--, this.size)]
+        if (i > endIndex) this[Math.floorMod(i--, this.size)]
         else null
     }
 }
