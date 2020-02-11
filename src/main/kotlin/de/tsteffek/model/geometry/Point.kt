@@ -14,15 +14,15 @@ open class Point(val x: Double, val y: Double) : GeometricObject {
     constructor(x: Double, y: Int) : this(x, y.toDouble())
     constructor(x: Int, y: Int) : this(x.toDouble(), y.toDouble())
 
-    /** Realises classical vector addition */
+    /** Classical vector addition. */
     operator fun plus(other: Point): Point =
         Point(x + other.x, y + other.y)
 
-    /** Realises classical vector subtraction */
+    /** Classical vector subtraction. */
     operator fun minus(other: Point): Point =
         Point(x - other.x, y - other.y)
 
-    /** Realises classical scalar multiplication */
+    /** Classical scalar multiplication. */
     operator fun times(constant: Double): Point =
         Point(x * constant, y * constant)
 

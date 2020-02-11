@@ -23,8 +23,8 @@ inline fun <T> Sequence<T>.filterAndCount(
         }
     }
 
-/** Higher order galore: Takes functions, returns functions, works,
- * but isn't as clean as my original approach in my opinion */
+/** Higher order galore: Takes functions, returns functions.
+ * It works, but isn't as clean as my original approach in my opinion. */
 inline fun <T> filterAndCount(
     counter: AtomicInteger, crossinline predicate: (T) -> Boolean
 ): (T) -> Boolean = {

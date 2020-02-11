@@ -1,4 +1,5 @@
 @startuml
+
 actor User
 create CLI
 User -> CLI ++ : tsv + scanner info
@@ -12,18 +13,13 @@ return points
 create NeighborhoodGraph
 CLI -> NeighborhoodGraph ++ : fromPoints(points)
 return graph
-create ModelFitting
 CLI -> ModelFitting ++ : fitLines(graph)
 return initialisedLines
-destroy ModelFitting
-create NAPSAC
-CLI -> NAPSAC ++ : initialisedLines
-note right : To be\nimplemented
-return betterLines
-destroy NAPSAC
-
+group repeat until good enough
+    CLI -> NAPSAC ++ : initialisedLines
+    note right : To be\nimplemented
+    return betterLines
+end
 return plot + fittedLines
-
-
 
 @enduml
