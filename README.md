@@ -15,29 +15,29 @@ View our [docs](docs/index.md)!
 
 Tasks
  1. [ULM](#1-uml) (<- right there)
- 
+
  2. [Metrics](#2-metrics) ( badges up top, or here: [Codecov](https://codecov.io/gh/tsteffek/floor-plan-generator),
   [Codacy](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tsteffek/floor-plan-generator&amp;utm_campaign=Badge_Coverage))
-  
+
  3. [Clean Code Development](#3-clean-code-development) (everywhere I hope, good examples include [NeighborhoodGraph.kt](src/main/kotlin/de/tsteffek/model/NeighborhoodGraph.kt), [Geometry.kt](src/main/kotlin/de/tsteffek/math/Geometry.kt))
- 
+
  4. [Build Management](#4-build-management) (Gradle, see [build.gradle.kts](build.gradle.kts))
- 
+
  5. [Unit Tests](#5-unit-tests) (where else but in the [test folder](src/test/kotlin/de/tsteffek)?)
- 
+
  6. [Continuous Delivery](#6-continuous-delivery) ([github action workflows](.github/workflows))
- 
+
  7. [Use a good IDE](#7-use-a-good-ide) (IntelliJ)
- 
+
  8. [DSL](#8-dsl) ([my dsl playground](https://github.com/tsteffek/floor-plan-generator/blob/dsl/src/main/kotlin/de/tsteffek/model/Scanner.kt))
- 
+
  9. [Functional Programming](#9-functional-programming) (nearly everywhere, most notably [Extensions.kt](src/main/kotlin/de/tsteffek/model/Extensions.kt))
- 
+
 Optionals
  1. [Optional 1: Logical Solver in the code](#optional-1-logical-solver-in-the-code) (no idea)
- 
+
  2. [Optional 2: Write a little code fragment in Scala or Clojure](#optional-2-write-a-little-code-fragment-in-scala-or-clojure) (my [Kafka](https://github.com/tsteffek/Kafka-Scala-Example) and [Spark](https://github.com/tsteffek/Spark-Scala-Example) assignments, hope they count)
- 
+
  3. [Optional 3: AOP](#optional-3-aop) (`filterAndCount()` in [Extensions.kt](src/main/kotlin/de/tsteffek/model/Extensions.kt) basically imitates that)
 
 ## Tasks
@@ -47,15 +47,15 @@ Optionals
 I tried to use IntelliJs auto-generated UMLs, which I didn't get to work. Maybe it doesn't work with Kotlin, maybe it's just not ready yet, maybe I'm holding it wrong. I did use the opportunity to finally work with PlantUML, which, frankly isn't all that bad. Check the [sources](src/docs). That's all all that's needed to generate the following UMLs. Expect for the component diagram, they all immediately aligned well, too.
 
  1. Component diagram of the target architecture for the whole application (simplified, to explain my brother what's supposed to happen)
- 
+
     ![future components](src/docs/future_components.png)
 
  2. Class diagram as overview for this module
- 
+
     ![class diagram](src/docs/mainuml.png)
 
  3. Sequence diagram displaying the target sequence for this module and the current state of this program
- 
+
     ![sequence diagram](src/docs/sequence.png)
 
 ### 2. Metrics
@@ -104,11 +104,11 @@ I used the FreeSpec, since I'm used to stacking test contexts for more concise d
 Tried the new **github actions**, see [github action workflows](.github/workflows). I love it.
 My 2 workflows do:
  - [Build&Test](.github/workflows/build_test.yml): builds and tests my project in 3 different os (2 are disabled right now, because it's not that critical right now). Then creates the Jacoco test report and uploads it to CodeCov and Codacy.
-  
+
       Utilized a github action from the marketplace, because that's a great feature in github actions.
 
  - [Release](.github/workflows/release.yml): builds the project, then runs [semantic release](https://github.com/semantic-release/semantic-release), which is my favorite new automated release cycle. Semantic release will create a pre-release on pushes to dev and a full release on pushes to master and manage version numbers on its own (as long as you write your commits like [this](.github/pull_request_template.md)). All just with [this many](.releaserc.json) lines.
-   
+
       Wrote it on my own using classical run-structure to test it out.
 
 ### 7. Use a good IDE
