@@ -4,7 +4,6 @@ import de.tsteffek.io.readFromTSV
 import de.tsteffek.model.geometry.PolarPoint
 import mu.KotlinLogging
 import java.io.File
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.LongAdder
 
 private val logger by lazy { KotlinLogging.logger {} }

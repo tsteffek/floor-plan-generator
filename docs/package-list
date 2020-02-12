@@ -2,11 +2,11 @@ $dokka.format:gfm
 $dokka.linkExtension:md
 $dokka.location:de.tsteffek.model$asCyclicReversed(kotlin.collections.List((de.tsteffek.model.asCyclicReversed.T)), kotlin.Int, kotlin.Int)de.tsteffek.model/kotlin.collections.-list/as-cyclic-reversed.md
 $dokka.location:de.tsteffek.model$asCyclicSequence(kotlin.collections.List((de.tsteffek.model.asCyclicSequence.T)), kotlin.Int, kotlin.Int)de.tsteffek.model/kotlin.collections.-list/as-cyclic-sequence.md
-$dokka.location:de.tsteffek.model$filterAndCount(kotlin.collections.Map((de.tsteffek.model.filterAndCount.K, de.tsteffek.model.filterAndCount.V)), java.util.concurrent.atomic.AtomicInteger, kotlin.Function1((kotlin.collections.Map.Entry((de.tsteffek.model.filterAndCount.K, de.tsteffek.model.filterAndCount.V)), kotlin.Boolean)))de.tsteffek.model/kotlin.collections.-map/filter-and-count.md
-$dokka.location:de.tsteffek.model$filterAndCount(kotlin.sequences.Sequence((de.tsteffek.model.filterAndCount.T)), java.util.concurrent.atomic.AtomicInteger, kotlin.Function1((de.tsteffek.model.filterAndCount.T, kotlin.Boolean)))de.tsteffek.model/kotlin.sequences.-sequence/filter-and-count.md
+$dokka.location:de.tsteffek.model$filterAndCount(kotlin.collections.Map((de.tsteffek.model.filterAndCount.K, de.tsteffek.model.filterAndCount.V)), java.util.concurrent.atomic.LongAdder, kotlin.Function1((kotlin.collections.Map.Entry((de.tsteffek.model.filterAndCount.K, de.tsteffek.model.filterAndCount.V)), kotlin.Boolean)))de.tsteffek.model/kotlin.collections.-map/filter-and-count.md
+$dokka.location:de.tsteffek.model$filterAndCount(kotlin.sequences.Sequence((de.tsteffek.model.filterAndCount.T)), java.util.concurrent.atomic.LongAdder, kotlin.Function1((de.tsteffek.model.filterAndCount.T, kotlin.Boolean)))de.tsteffek.model/kotlin.sequences.-sequence/filter-and-count.md
 $dokka.location:de.tsteffek.model$mean(kotlin.collections.Collection((kotlin.Double)))de.tsteffek.model/kotlin.collections.-collection/mean.md
+de.tsteffek
 de.tsteffek.algorithms
-de.tsteffek.bin
 de.tsteffek.io
 de.tsteffek.math
 de.tsteffek.model

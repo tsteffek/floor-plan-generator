@@ -63,8 +63,8 @@ I tried to use IntelliJs auto-generated UMLs, which I didn't get to work. Maybe 
 (see badges at top)
 
 I couldn't use Sonarqube, since that's only free for public repositories, instead I tried these two:
- -  **[Codecov](https://codecov.io/gh/tsteffek/floor-plan-generator)**: wouldn't recommend, wouldn't even explain what its complexity score means
- -  **[Codacy](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tsteffek/floor-plan-generator&amp;utm_campaign=Badge_Coverage)**: would recommend, nice set of features even for private repositories. It tracks coverage and issues. For the issues you select patterns for your specific programming language, which you have to match. These patterns range from linting to good programming practices to performance tips, they basically enforce clean code and then some. The static code analysis tool they use for Kotlin is Detekt, which offers 176 patterns. It will also tell you about so-called "hotspots", 
+ -   **[Codecov](https://codecov.io/gh/tsteffek/floor-plan-generator)**: wouldn't recommend, wouldn't even explain what its complexity score means
+ -   **[Codacy](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tsteffek/floor-plan-generator&amp;utm_campaign=Badge_Coverage)**: would recommend, nice set of features even for private repositories. It tracks coverage and issues. For the issues you select patterns for your specific programming language, which you have to match. These patterns range from linting to good programming practices to performance tips, they basically enforce clean code and then some. The static code analysis tool they use for Kotlin is Detekt, which offers 176 patterns. It will also tell you about so-called "hotspots", 
 
 ### 3. Clean Code Development
 
@@ -81,14 +81,14 @@ I couldn't use Sonarqube, since that's only free for public repositories, instea
  10. **consistency**: if you do things 4 times one way, don't do it differently the 5th time.
 
 5 points to show:
- -  short classes: (nearly) all my classes are short.
- -  magic numbers: see `computeClosest()` in [NeighborhoodGraph](src/main/kotlin/de/tsteffek/model/NeighborhoodGraph.kt).
- -  explanatory variables: see `computeNextClosestRec()` in [NeighborhoodGraph](src/main/kotlin/de/tsteffek/model/NeighborhoodGraph.kt).
- -  consistency: i.e. most of my classes contain factory methods, all of them are called `fromX()` (compare UML). All my distance computations are within the [Geometry](src/main/kotlin/de/tsteffek/math/Geometry.kt) script, and all of them are overloaded versions of `distance()`, except for `distanceOriginLineToPoint(angle: Double, p: PolarPoint)`, which starts with "distance-", but wouldn't be declarative enough with just "distance".
- -  short methods: see [Geometry](src/main/kotlin/de/tsteffek/math/Geometry.kt), or anywhere, really (except for `calculatePoints()` in `Scan2D`, which is longer because of the functional programming task).
+ -   short classes: (nearly) all my classes are short.
+ -   magic numbers: see `computeClosest()` in [NeighborhoodGraph](src/main/kotlin/de/tsteffek/model/NeighborhoodGraph.kt).
+ -   explanatory variables: see `computeNextClosestRec()` in [NeighborhoodGraph](src/main/kotlin/de/tsteffek/model/NeighborhoodGraph.kt).
+ -   consistency: i.e. most of my classes contain factory methods, all of them are called `fromX()` (compare UML). All my distance computations are within the [Geometry](src/main/kotlin/de/tsteffek/math/Geometry.kt) script, and all of them are overloaded versions of `distance()`, except for `distanceOriginLineToPoint(angle: Double, p: PolarPoint)`, which starts with "distance-", but wouldn't be declarative enough with just "distance".
+ -   short methods: see [Geometry](src/main/kotlin/de/tsteffek/math/Geometry.kt), or anywhere, really (except for `calculatePoints()` in `Scan2D`, which is longer because of the functional programming task).
 
 ### 4. Build Management
- -  Looked at Bazel, will DEFINITELY use it for my next Python project, since a good build management tool is one of the major points Python is lacking (Pip and Anaconda lack the fluent dependency management build management tools of other languages have). However, it is definitely meant for larger projects, which this isn't.
+ -   Looked at Bazel, will DEFINITELY use it for my next Python project, since a good build management tool is one of the major points Python is lacking (Pip and Anaconda lack the fluent dependency management build management tools of other languages have). However, it is definitely meant for larger projects, which this isn't.
  -   So I went with **Gradle**, see [build.gradle.kts](build.gradle.kts) (hurray for the new Kotlin based DSL!). My build.gradle.kts does it all, manages several repositories and dependencies, configures my application, Kotlin, Jacoco and Dokka (= JavaDoc for Kotlin), creates new tasks, adjusts existing ones, heck even calls an ant task at one point.
 
 ### 5. Unit Tests
@@ -103,10 +103,11 @@ I used the FreeSpec, since I'm used to stacking test contexts for more concise d
 
 Tried the new **github actions**, see [github action workflows](.github/workflows). I love it.
 My 2 workflows do:
- -  [Build&Test](.github/workflows/build_test.yml): builds and tests my project in 3 different os (2 are disabled right now, because it's not that critical right now). Then creates the Jacoco test report and uploads it to CodeCov and Codacy.
+ -   [Build&Test](.github/workflows/build_test.yml): builds and tests my project in 3 different os (2 are disabled right now, because it's not that critical right now). Then creates the Jacoco test report and uploads it to CodeCov and Codacy.
   
       Utilized a github action from the marketplace, because that's a great feature in github actions.
- -  [Release](.github/workflows/release.yml): builds the project, then runs [semantic release](https://github.com/semantic-release/semantic-release), which is my favorite new automated release cycle. Semantic release will create a pre-release on pushes to dev and a full release on pushes to master and manage version numbers on its own (as long as you write your commits like [this](.github/pull_request_template.md)). All just with [this many](.releaserc.json) lines.
+      
+ -   [Release](.github/workflows/release.yml): builds the project, then runs [semantic release](https://github.com/semantic-release/semantic-release), which is my favorite new automated release cycle. Semantic release will create a pre-release on pushes to dev and a full release on pushes to master and manage version numbers on its own (as long as you write your commits like [this](.github/pull_request_template.md)). All just with [this many](.releaserc.json) lines.
    
       Wrote it on my own using classical run-structure to test it out.
 
@@ -114,14 +115,14 @@ My 2 workflows do:
 
 I used IntelliJ, which is not a good IDE, but sadly the best around. Main issues I have with IntelliJ are about quality of life changes, like drag&dropping editor views to split the view into multiple views. Which is a feature every Javascript editor is able to do, but since IntelliJ doesn't have any noteworthy competitors (for Kotlin especially) they don't care about making people happy. But it features the best Kotlin support, as well as Java to Kotlin translators.
 
-#### Favorite hotkeys (might not be original IntelliJ settings):
- -  Alt+Shift+S: Basically right-click without having to touch the mouse. From where, you can press e.g. 'r', then 'g' to change signature of a method.
- -  Alt+Ctrl+S: Open settings. I.e. to adjust auto-formatter.
- -  Ctrl+Shift+F: Auto-Formatter.
- -  Alt+Shift+R: for renaming variables/methods/classes
- -  Ctrl+Space: Suggests code completion. Absolutely necessary when coding.
- -  Ctrl+Shift+Space: Opens documentation. So you know what the function you're calling actually does.
- -  Alt+Enter: Show suggestions to fix whatever IntelliJ thinks is wrong. Squiggly line underneath your code? Alt+Enter.
+#### Favorite hotkeys (might not be original IntelliJ settings)
+ -   Alt+Shift+S: Basically right-click without having to touch the mouse. From where, you can press e.g. 'r', then 'g' to change signature of a method.
+ -   Alt+Ctrl+S: Open settings. I.e. to adjust auto-formatter.
+ -   Ctrl+Shift+F: Auto-Formatter.
+ -   Alt+Shift+R: for renaming variables/methods/classes
+ -   Ctrl+Space: Suggests code completion. Absolutely necessary when coding.
+ -   Ctrl+Shift+Space: Opens documentation. So you know what the function you're calling actually does.
+ -   Alt+Enter: Show suggestions to fix whatever IntelliJ thinks is wrong. Squiggly line underneath your code? Alt+Enter.
 
 ### 8. DSL
 

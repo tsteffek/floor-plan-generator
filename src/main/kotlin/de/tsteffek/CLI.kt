@@ -16,7 +16,6 @@ import de.tsteffek.model.Scanner
 import de.tsteffek.model.geometry.LineSegment
 import java.io.File
 
-
 /** Starts the command line interface. */
 fun main(args: Array<String>) = CLI().main(args)
 

@@ -20,3 +20,9 @@ Contains various classes to model the task of model fitting.
 | [kotlin.collections.List](kotlin.collections.-list/index.md) |  |
 | [kotlin.collections.Map](kotlin.collections.-map/index.md) |  |
 | [kotlin.sequences.Sequence](kotlin.sequences.-sequence/index.md) |  |
+
+### Functions
+
+| Name | Summary |
+|---|---|
+| [filterAndCount](filter-and-count.md) | Higher order galore: Takes functions, returns functions. It works, but isn't as clean as my original approach in my opinion.`fun <T> filterAndCount(counter: `[`LongAdder`](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/LongAdder.html)`, predicate: (T) -> `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)`): (T) -> `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |

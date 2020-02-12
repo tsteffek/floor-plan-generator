@@ -1,11 +1,10 @@
 package de.tsteffek.model
 
-import de.tsteffek.math.distanceOriginLineToPoint
 import de.tsteffek.math.distance
+import de.tsteffek.math.distanceOriginLineToPoint
 import de.tsteffek.model.geometry.GeometricObject
 import de.tsteffek.model.geometry.PolarPoint
 import mu.KotlinLogging
-import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.LongAdder
 
 private val logger by lazy { KotlinLogging.logger {} }
