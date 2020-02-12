@@ -5,6 +5,7 @@ import de.tsteffek.model.geometry.PolarPoint
 import mu.KotlinLogging
 import java.io.File
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.LongAdder
 
 private val logger by lazy { KotlinLogging.logger {} }
 
@@ -102,8 +103,8 @@ class Scan2D(val pointCloud: List<PolarPoint>, private val scanner: Scanner) {
 
         private fun calculatePoints(data: List<ScanData>, scanner: Scanner)
                 : List<PolarPoint> {
-            val counterNull = AtomicInteger(0)
-            val counterQuality = AtomicInteger(0)
+            val counterNull = LongAdder()
+            val counterQuality = LongAdder()
 
             val nullCountFilter = filterAndCount<ScanData>(counterNull) {
                 it.distance !== null && !it.distance.isNaN() && it.quality !== null
@@ -125,8 +126,8 @@ class Scan2D(val pointCloud: List<PolarPoint>, private val scanner: Scanner) {
                 }.toList()
 
             logger.info {
-                "skipped points: $counterNull [NaN], $counterQuality [quality > ${scanner.qualityMax}] " +
-                        "out of ${data.size}"
+                "skipped points: ${counterNull.sum()} [NaN], ${counterQuality.sum()} [quality > ${scanner.qualityMax}]" +
+                        " out of ${data.size}"
             }
             return points
         }

@@ -80,7 +80,7 @@ tasks {
         }
     }
 
-    jar {
+    jar { // add html dokka to the jar task
         dependsOn(dokka, "htmlDokka")
     }
 

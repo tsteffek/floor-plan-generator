@@ -6,6 +6,7 @@ import de.tsteffek.model.geometry.GeometricObject
 import de.tsteffek.model.geometry.PolarPoint
 import mu.KotlinLogging
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.LongAdder
 
 private val logger by lazy { KotlinLogging.logger {} }
 
@@ -52,14 +53,14 @@ data class NeighborhoodGraph<T : GeometricObject>(
         }
 
         private fun <T> filterOutlier(map: Map<T, Set<T>>): Map<T, Set<T>> {
-            val count = AtomicInteger(0)
+            val count = LongAdder()
             val filteredMap = map.filterAndCount(count) { (point, neighbors) ->
                 neighbors.any { neighbor ->
                     val neighborsOfNeighbor = map.getValue(neighbor)
                     neighborsOfNeighbor.contains(point)
                 }
             }
-            logger.info { "filtered outliers: $count out of ${map.size}" }
+            logger.info { "filtered outliers: ${count.sum()} out of ${map.size}" }
             return filteredMap
         }
 
