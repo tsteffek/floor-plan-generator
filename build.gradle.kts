@@ -62,6 +62,9 @@ tasks {
     }
 
     val dokka by getting(DokkaTask::class) {
+        doFirst { // delete old docs
+            delete(fileTree("docs"))
+        }
         outputFormat = "gfm"
         outputDirectory = "docs"
         configuration {
@@ -73,7 +76,7 @@ tasks {
             includes = listOf("src/docs/packages.md")
         }
 
-        doLast { // move the docs from ./docs/docs to ./docs
+        doLast { // move the docs from ./docs/docs to ./docs (Dokka can't output to a single directory level...)
             ant.withGroovyBuilder {
                 "move"("file" to "./docs/docs", "todir" to ".")
             }
