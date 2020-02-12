@@ -126,8 +126,8 @@ class Scan2D(val pointCloud: List<PolarPoint>, private val scanner: Scanner) {
                 }.toList()
 
             logger.info {
-                "skipped points: ${counterNull.sum()} [NaN], ${counterQuality.sum()} [quality > ${scanner.qualityMax}]" +
-                        " out of ${data.size}"
+                "skipped points: ${counterNull.sum()} [NaN]," +
+                        " ${counterQuality.sum()} [quality > ${scanner.qualityMax}] out of ${data.size}"
             }
             return points
         }
