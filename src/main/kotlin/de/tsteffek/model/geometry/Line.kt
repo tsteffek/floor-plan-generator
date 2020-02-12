@@ -61,8 +61,8 @@ open class Line(val slope: Double, val intercept: Double) : GeometricObject {
             (a.y - b.y) / (a.x - b.x)
 
         /** Computes the line using a starting [point] and a [slope]. */
-        internal fun fromSlopeAndPoint(slope: Double, a: Point): Line =
-            Line(slope, interceptFromPointWithSlope(slope, a.x, a.y))
+        internal fun fromSlopeAndPoint(slope: Double, point: Point): Line =
+            Line(slope, interceptFromPointWithSlope(slope, point.x, point.y))
 
         private fun interceptFromPointWithSlope(slope: Double, x: Double, y: Double): Double =
             y - slope * x

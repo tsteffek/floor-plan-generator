@@ -8,7 +8,7 @@ Backend for a service that turns input of a 2d lidar scan into a floorplan.
 |---|---|
 |
 
-##### [de.tsteffek.bin.CLI](../de.tsteffek.bin/-c-l-i/index.md)
+##### [de.tsteffek.CLI](../de.tsteffek/-c-l-i/index.md)
 
 Contains the command line interface.
 
@@ -61,10 +61,14 @@ A NeighborhoodGraph of [GeometricObject](../de.tsteffek.model.geometry/-geometri
 
 ##### [de.tsteffek.model.geometry.Point](../de.tsteffek.model.geometry/-point/index.md)
 
+The [GeometricObject](../de.tsteffek.model.geometry/-geometric-object/index.md) resembling a simple 2D point.
+
 
 |
 
 ##### [de.tsteffek.model.geometry.PolarPoint](../de.tsteffek.model.geometry/-polar-point/index.md)
+
+The [GeometricObject](../de.tsteffek.model.geometry/-geometric-object/index.md) resembling a 2D point expressed in polar coordinates.
 
 
 |

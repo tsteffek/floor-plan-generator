@@ -1,11 +1,11 @@
 package de.tsteffek.model
 
-import de.tsteffek.math.distanceOriginLineToPoint
 import de.tsteffek.math.distance
+import de.tsteffek.math.distanceOriginLineToPoint
 import de.tsteffek.model.geometry.GeometricObject
 import de.tsteffek.model.geometry.PolarPoint
 import mu.KotlinLogging
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.LongAdder
 
 private val logger by lazy { KotlinLogging.logger {} }
 
@@ -33,19 +33,18 @@ data class NeighborhoodGraph<T : GeometricObject>(
          * Computes the [NeighborhoodGraph] of a [List] of [T]s using brute
          * force. Depending on the type of [T], more efficient algorithms may
          * be available.
-         * @param closestNeighbors amount of closest neighbors to detect,
+         * @param numberClosestNeighbors amount of closest neighbors to detect,
          * defaults to 2
          */
-        fun <T : GeometricObject> usingBruteForce(
+        fun <T : GeometricObject> fromBruteForce(
             objects: List<T>,
-            closestNeighbors: Int = 2
+            numberClosestNeighbors: Int = 2
         ): NeighborhoodGraph<T> {
             val objectToList = objects.associateWith {
                 objects.asSequence()
                     .sortedBy { other -> it.distanceTo(other) }
                     .minus(it)
-                    .take(closestNeighbors)
-                    .filter { other -> it !== other }
+                    .take(numberClosestNeighbors)
                     .toSet()
             }
 
@@ -53,13 +52,14 @@ data class NeighborhoodGraph<T : GeometricObject>(
         }
 
         private fun <T> filterOutlier(map: Map<T, Set<T>>): Map<T, Set<T>> {
-            val count = AtomicInteger(0)
+            val count = LongAdder()
             val filteredMap = map.filterAndCount(count) { (point, neighbors) ->
                 neighbors.any { neighbor ->
-                    map.getValue(neighbor).contains(point)
+                    val neighborsOfNeighbor = map.getValue(neighbor)
+                    neighborsOfNeighbor.contains(point)
                 }
             }
-            logger.info { "filtered outliers: $count out of ${map.size}" }
+            logger.info { "filtered outliers: ${count.sum()} out of ${map.size}" }
             return filteredMap
         }
 
@@ -83,25 +83,49 @@ data class NeighborhoodGraph<T : GeometricObject>(
         }
 
         private fun computeClosest(index: Int, points: List<PolarPoint>): Set<PolarPoint> {
-            val it = points[index % points.size]
-            val halfSize = points.size /2
-            val forwardIterator = points.asCyclicSequence(index + 1, index + halfSize).iterator()
-            val backwardIterator = points.asCyclicReversed(index - 1, index - halfSize).iterator()
-            return setOf(
-                computeNextClosestRec(
-                    it, null, Double.POSITIVE_INFINITY, forwardIterator
-                )!!,
-                computeNextClosestRec(
-                    it, null, Double.POSITIVE_INFINITY, backwardIterator
-                )!!
+            val it = points[index]
+            val sizeWithoutIt = points.size - 1
+            val halfSize = sizeWithoutIt / 2
+            val oddNumberRemainder = sizeWithoutIt % 2
+
+            val closestForwardsNeighbor = computeClosestForwards(
+                points, index + 1, halfSize + oddNumberRemainder, it
             )
+            val closestBackwardsNeighbor = computeClosestBackwards(
+                points, index - 1, halfSize, it
+            )
+
+            return setOf(closestForwardsNeighbor, closestBackwardsNeighbor)
         }
 
+        private fun computeClosestForwards(
+            points: List<PolarPoint>,
+            startIndex: Int,
+            elementsToIterate: Int,
+            it: PolarPoint
+        ): PolarPoint {
+            val forwardIterator =
+                points.asCyclicSequence(startIndex, startIndex + elementsToIterate).iterator()
+            return computeNextClosestRec(it, forwardIterator)!!
+        }
+
+        private fun computeClosestBackwards(
+            points: List<PolarPoint>,
+            startIndex: Int,
+            elementsToIterate: Int,
+            it: PolarPoint
+        ): PolarPoint {
+            val backwardIterator =
+                points.asCyclicReversed(startIndex, startIndex - elementsToIterate).iterator()
+            return computeNextClosestRec(it, backwardIterator)!!
+        }
+
+        @Suppress("TAILREC_WITH_DEFAULTS")
         private tailrec fun computeNextClosestRec(
             it: PolarPoint,
-            closestPoint: PolarPoint?,
-            distanceToClosest: Double,
-            iterator: Iterator<PolarPoint>
+            iterator: Iterator<PolarPoint>,
+            closestPoint: PolarPoint? = null,
+            distanceToClosest: Double = Double.POSITIVE_INFINITY
         ): PolarPoint? {
             if (!iterator.hasNext()) return closestPoint
             val nextPoint = iterator.next()
@@ -111,9 +135,9 @@ data class NeighborhoodGraph<T : GeometricObject>(
 
             val distanceToNext = distance(it, nextPoint)
             return if (distanceToClosest < distanceToNext)
-                computeNextClosestRec(it, closestPoint, distanceToClosest, iterator)
+                computeNextClosestRec(it, iterator, closestPoint, distanceToClosest)
             else
-                computeNextClosestRec(it, nextPoint, distanceToNext, iterator)
+                computeNextClosestRec(it, iterator, nextPoint, distanceToNext)
         }
     }
 }

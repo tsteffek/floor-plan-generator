@@ -1,6 +1,6 @@
 package de.tsteffek.model
 
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.LongAdder
 
 /**
  * Returns a sequence containing only elements matching the given [predicate]
@@ -12,16 +12,29 @@ import java.util.concurrent.atomic.AtomicInteger
  * @receiver [Sequence]<[T]>
  */
 inline fun <T> Sequence<T>.filterAndCount(
-    counter: AtomicInteger, crossinline predicate: (T) -> Boolean
+    counter: LongAdder, crossinline predicate: (T) -> Boolean
 ): Sequence<T> =
     this.filter {
         if (predicate(it)) {
             true
         } else {
-            counter.incrementAndGet()
+            counter.increment()
             false
         }
     }
+
+/** Higher order galore: Takes functions, returns functions.
+ * It works, but isn't as clean as my original approach in my opinion. */
+inline fun <T> filterAndCount(
+    counter: LongAdder, crossinline predicate: (T) -> Boolean
+): (T) -> Boolean = {
+    if (predicate(it)) {
+        true
+    } else {
+        counter.increment()
+        false
+    }
+}
 
 /**
  * Returns a new map containing all key-value pairs matching the given
@@ -33,13 +46,13 @@ inline fun <T> Sequence<T>.filterAndCount(
  * @receiver [Map]<out [K], [V]>
  */
 inline fun <K, V> Map<out K, V>.filterAndCount(
-    counter: AtomicInteger, predicate: (Map.Entry<K, V>) -> Boolean
+    counter: LongAdder, predicate: (Map.Entry<K, V>) -> Boolean
 ): Map<K, V> =
     this.filter {
         if (predicate(it)) {
             true
         } else {
-            counter.incrementAndGet()
+            counter.increment()
             false
         }
     }
@@ -50,13 +63,13 @@ inline fun <K, V> Map<out K, V>.filterAndCount(
  *
  * Will cycle if necessary.
  * @param startingIndex index to start at \[inclusive\]
- * @param endIndex index to stop at \[inclusive\]
+ * @param endIndex index to stop at \[exclusive\]
  * @receiver [List]<[T]>
  */
 fun <T : Any> List<T>.asCyclicSequence(startingIndex: Int, endIndex: Int): Sequence<T> {
     var i = startingIndex
     return generateSequence {
-        if (i <= endIndex) this[Math.floorMod(i++, this.size)]
+        if (i < endIndex) this[Math.floorMod(i++, this.size)]
         else null
     }
 }
@@ -67,13 +80,13 @@ fun <T : Any> List<T>.asCyclicSequence(startingIndex: Int, endIndex: Int): Seque
  *
  * Will cycle if necessary.
  * @param startingIndex index to start at \[inclusive\]
- * @param endIndex index to stop at \[inclusive\]
+ * @param endIndex index to stop at \[exclusive\]
  * @receiver [List]<[T]>
  */
 fun <T : Any> List<T>.asCyclicReversed(startingIndex: Int, endIndex: Int): Sequence<T> {
     var i = startingIndex
     return generateSequence {
-        if (i >= endIndex) this[Math.floorMod(i--, this.size)]
+        if (i > endIndex) this[Math.floorMod(i--, this.size)]
         else null
     }
 }

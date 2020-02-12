@@ -18,4 +18,4 @@ A geometric object.
 | Name | Summary |
 |---|---|
 | [Line](../-line/index.md) | The [GeometricObject](./index.md) resembling a simple line in slope-intercept-form.`open class Line : `[`GeometricObject`](./index.md) |
-| [Point](../-point/index.md) | `open class Point : `[`GeometricObject`](./index.md) |
+| [Point](../-point/index.md) | The [GeometricObject](./index.md) resembling a simple 2D point.`open class Point : `[`GeometricObject`](./index.md) |

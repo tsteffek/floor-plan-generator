@@ -3,3 +3,6 @@
 # plus
 
 `operator fun plus(other: `[`Point`](index.md)`): `[`Point`](index.md)
+
+Classical vector addition.
+

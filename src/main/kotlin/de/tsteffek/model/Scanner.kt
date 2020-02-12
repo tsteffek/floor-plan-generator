@@ -15,13 +15,13 @@ package de.tsteffek.model
  * @property qualityKey the key for the quality-field in a tsv
  */
 data class Scanner(
-    val id:String,
-    val incremental: Boolean,
-    val stepAngle: Double,
-    val clockwise: Boolean,
-    val qualityMax: Int,
-    val idKey: String = "id",
-    val stepSizeKey: String = "step size",
-    val distanceKey: String = "distance",
-    val qualityKey: String = "quality"
+    internal val id: String,
+    internal val incremental: Boolean,
+    internal val stepAngle: Double,
+    internal val clockwise: Boolean,
+    internal val qualityMax: Int,
+    internal val idKey: String = "id",
+    internal val stepSizeKey: String = "step size",
+    internal val distanceKey: String = "distance",
+    internal val qualityKey: String = "quality"
 )

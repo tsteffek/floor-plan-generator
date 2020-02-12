@@ -1,0 +1,96 @@
+@startuml
+
+package de.tsteffek {
+package math {
+    class Geometry {
+        {static} + distance(a: Point, b: Point)
+        {static} + distance(p: Point, l: Line)
+        {static} + ... ()
+    }
+}
+
+package algorithms {
+    class ModelFitting {
+        {static} + <T : Point> fitLines(graph: NeighborhoodGraph<T>)
+    }
+}
+
+package io {
+    class Reader {
+        {static} + readFromTSV(tsv: File)
+        {static} + readFromTSV(tsv: String)
+    }
+}
+
+package "model" {
+    class Scanner {
+        ~ incremental: Boolean
+        ~ stepAngle: Double
+        ~ clockwise: Boolean
+        ~ qualityMax: Int
+        ...
+    }
+    class NeighborhoodGraph< T: GeometricObject > {
+        + getSize()
+        + getObjects()
+        + getNeighbors(t: T)
+        {static} + fromBruteForce(objects: T[], closestNeighbors: Int = 2)
+        {static} + fromPolarPoints(points: PolarPoint[])
+    }
+    class Scan2D {
+        + rotateBy(angle: Double)
+        {static} + fromTSV(tsv: File)
+        {static} + fromTSV(tsv: String)
+    }
+    package "geometry" {
+        interface GeometricObject {
+            + distanceTo(other: GeometricObject)
+            + toTSVString()
+        }
+        class Point {
+            + x: Double
+            + y: Double
+            + plus(other: Point)
+            + minus(other: Point)
+            + times(constant: Double)
+            + liesOn(lineSeg: LineSegment)
+        }
+        class PolarPoint {
+            + angle: Double
+            + distance: Double
+            + normalizedDirection()
+            + rotateBy(angle: Double)
+        }
+        class Line {
+            + slope: Double
+            + intercept: Double
+            {static} + fromTwoPoints(a: Point, b: Point)
+            {static} + fromSeveralPoints(points: Point[])
+        }
+        class LineSegment {
+            + startPoint: Point
+            + endPoint: Point
+            ~ inBoundingBox(p: Point)
+            {static} + fromSeveralPoints(points: PolarPoint[])
+        }
+    }
+}
+}
+
+ModelFitting ..> NeighborhoodGraph : <<builds upon>>
+
+NeighborhoodGraph "1..*" o- "+graph *" GeometricObject
+NeighborhoodGraph ..> Geometry : <<uses>>
+
+GeometricObject <|-- Point
+GeometricObject <|-- Line
+
+Point <|-- PolarPoint
+Line <|-- LineSegment
+
+Scan2D "1..*" o-- "*" PolarPoint: consists of
+Scan2D "1..*" o-- "-scanner 1" Scanner
+Scan2D "1..*" ..> Reader : <<uses>>
+
+
+@enduml

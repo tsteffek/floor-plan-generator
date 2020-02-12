@@ -1,0 +1,26 @@
+@startuml
+
+package "User App" {
+    WebSocket - [floorplan-view]
+}
+
+package "Server" {
+    [websocket server] as WS
+    REST - WS
+    WS - [floor-plan-generator]
+    WS ..> WebSocket : sends estimated layout
+    WebSocket ..> WS : accept or not
+    note left of REST
+     for initial connection
+     (omitted for clarity)
+     end note
+}
+
+package "Scanner Unit" {
+    [Processing Unit] - WebSocket2
+    [Lidar Scanner] -> [Processing Unit]
+    WebSocket2 ..> WS : sends scan
+    WS ..> WebSocket2 : scan / scan again
+}
+
+@enduml

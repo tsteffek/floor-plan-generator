@@ -27,7 +27,7 @@ class NeighborhoodGraphTest : FreeSpec({
                 listOf(Point(1, 0), Point(2, 0), Point(3, 0), Point(4, 0)), 4
             )
         ) { points, targetSize ->
-            NeighborhoodGraph.usingBruteForce(points).getSize() shouldBe targetSize
+            NeighborhoodGraph.fromBruteForce(points).getSize() shouldBe targetSize
         }
     }
 
@@ -36,10 +36,7 @@ class NeighborhoodGraphTest : FreeSpec({
         val b = PolarPoint(Math.toRadians(-90.0), 1.0, 4)
         val c = PolarPoint(Math.toRadians(90.0), 1.0, 2)
         val d = PolarPoint(Math.toRadians(170.0), 0.9, 3)
-        val outlier = PolarPoint(Math.toRadians(45.0), 50.0, 1)
-        val unknownPoint = PolarPoint(Math.toRadians(90.0), 10.0, 500)
 
-        val points = listOf(a, outlier, b, c, d)
         val inlier = listOf(a, b, c, d)
         val targetGraph = mapOf(
             a to listOf(b, c),
@@ -48,8 +45,13 @@ class NeighborhoodGraphTest : FreeSpec({
             d to listOf(c, b)
         )
 
+        val outlier = PolarPoint(Math.toRadians(45.0), 50.0, 1)
+        val points = listOf(a, outlier, b, c, d)
+
+        val unknownPoint = PolarPoint(Math.toRadians(90.0), 10.0, 500)
+
         listOf(
-            row("brute force", NeighborhoodGraph.usingBruteForce(points)),
+            row("brute force", NeighborhoodGraph.fromBruteForce(points)),
             row("from polar points", NeighborhoodGraph.fromPolarPoints(points))
         ).map { (method, graph) ->
             "$method should filter outliers" {

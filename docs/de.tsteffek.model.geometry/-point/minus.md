@@ -3,3 +3,6 @@
 # minus
 
 `operator fun minus(other: `[`Point`](index.md)`): `[`Point`](index.md)
+
+Classical vector subtraction.
+

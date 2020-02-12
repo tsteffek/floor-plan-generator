@@ -3,3 +3,9 @@
 # x
 
 `val x: `[`Double`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html)
+
+location on the x-axis
+
+### Property
+
+`x` - location on the x-axis
