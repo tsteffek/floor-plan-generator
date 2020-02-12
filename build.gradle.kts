@@ -1,14 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.kotlin.dsl.startScripts
+import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     kotlin("jvm") version "1.3.50"
     application
     jacoco
+    id("org.jetbrains.dokka") version "0.10.0"
 }
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 configurations.forEach { it.exclude("org.slf4j", "slf4j-log4j12") }
@@ -34,27 +37,68 @@ dependencies {
 
     /* Testing */
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+    testImplementation("io.mockk:mockk:1.9.3")
 }
 
 application {
     mainClassName = "bin/CLIKt"
 }
 
-tasks.jacocoTestReport {
-    reports {
-        xml.isEnabled = true
-        html.isEnabled = false
+tasks {
+    startScripts {
+        applicationName = "fpg"
     }
-}
 
-tasks.startScripts {
-    applicationName = "fpg"
-}
+    register<DokkaTask>("htmlDokka") {
+        outputFormat = "html"
+        outputDirectory = "$buildDir/dokka"
+        configuration {
+            includeNonPublic = false
+            skipDeprecated = true
+            skipEmptyPackages = true
+            jdkVersion = 8
+            includes = listOf("packages.md")
+        }
+    }
 
-val test by tasks.getting(Test::class) {
-    useJUnitPlatform { }
-}
+    val dokka by getting(DokkaTask::class) {
+        doFirst { // delete old docs
+            delete(fileTree("docs"))
+        }
+        outputFormat = "gfm"
+        outputDirectory = "docs"
+        configuration {
+            moduleName = "docs"
+            includeNonPublic = false
+            skipDeprecated = true
+            skipEmptyPackages = true
+            jdkVersion = 8
+            includes = listOf("src/docs/packages.md")
+        }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+        doLast { // move the docs from ./docs/docs to ./docs (Dokka can't output to a single directory level...)
+            ant.withGroovyBuilder {
+                "move"("file" to "./docs/docs", "todir" to ".")
+            }
+        }
+    }
+
+    jar { // add html dokka to the jar task
+        dependsOn(dokka, "htmlDokka")
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.isEnabled = true
+            html.isEnabled = false
+        }
+    }
+
+    val test by getting(Test::class) {
+        useJUnitPlatform { }
+    }
+
+    withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "1.8"
+    }
 }
