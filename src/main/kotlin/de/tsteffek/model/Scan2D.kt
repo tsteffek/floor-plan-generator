@@ -62,27 +62,27 @@ class Scan2D(val pointCloud: List<PolarPoint>, private val scanner: Scanner) {
         }
 
         private fun fromMap(map: List<Map<String, String>>, scanner: Scanner): Scan2D {
-            val parsedData = parseToScanData(map, scanner, scanner.incremental)
+            val parsedData = parseToScanData(map, scanner.tsvKeys, scanner.incremental)
             val points = calculatePoints(parsedData, scanner)
             return Scan2D(points, scanner)
         }
 
         private fun parseToScanData(
             map: List<Map<String, String>>,
-            scanner: Scanner,
+            tsvKeys: TsvKeys,
             incremental: Boolean
         ): List<ScanData> {
             val parsedData = map
                 .mapIndexed { index, dataObject ->
-                    val id = dataObject[scanner.idKey]?.toInt()
-                    val amountOfSteps = dataObject[scanner.stepSizeKey]?.toDoubleOrNull()
-                    val distance = dataObject[scanner.distanceKey]?.toDoubleOrNull()
-                    val quality = dataObject[scanner.qualityKey]?.toIntOrNull()
+                    val id = dataObject[tsvKeys.idKey]?.toInt()
+                    val amountOfSteps = dataObject[tsvKeys.stepSizeKey]?.toDoubleOrNull()
+                    val distance = dataObject[tsvKeys.distanceKey]?.toDoubleOrNull()
+                    val quality = dataObject[tsvKeys.qualityKey]?.toIntOrNull()
 
                     requireNotNull(id)
-                    { "${scanner.idKey} missing in TSV line ${index + 1}" }
+                    { "${tsvKeys.idKey} missing in TSV line ${index + 1}" }
                     require(amountOfSteps != null && !amountOfSteps.isNaN())
-                    { "${scanner.stepSizeKey} missing in TSV line ${index + 1}" }
+                    { "${tsvKeys.stepSizeKey} missing in TSV line ${index + 1}" }
 
                     ScanData(id, amountOfSteps, distance, quality)
                 }
