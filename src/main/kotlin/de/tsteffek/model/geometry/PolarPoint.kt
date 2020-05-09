@@ -34,5 +34,25 @@ class PolarPoint(
         "$distance\t$angle\t$quality"
 
     override fun toString(): String =
-        "Point(distance=$distance, angle=$angle, quality=$quality)"
+        "Point(angle=$angle, distance=$distance, quality=$quality)"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PolarPoint
+
+        if (other.quality > quality || quality > other.quality) return false
+
+        return super.equals(other)
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + angle.hashCode()
+        result = 31 * result + distance.hashCode()
+        result = 31 * result + quality
+        return result
+    }
+
 }

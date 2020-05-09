@@ -8,69 +8,106 @@ import io.kotlintest.tables.headers
 import io.kotlintest.tables.row
 import io.kotlintest.tables.table
 import de.tsteffek.math.PRECISION
+import io.kotlintest.shouldNotBe
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 internal class PolarPointTest : FreeSpec({
 
-        "normalizedDirection" {
-            val pointsAndLengths = table(
-                headers("point", "length"),
-                row(
-                    PolarPoint(Math.toRadians(45.0), 1.0, 0),
-                    1.0
-                ),
-                row(
-                    PolarPoint(Math.toRadians(45.0), sqrt(2.0), 0),
-                    sqrt(2.0)
-                ),
-                row(
-                    PolarPoint(Math.toRadians(45.0), 2 * sqrt(2.0), 0),
-                    2 * sqrt(2.0)
-                )
+    "equals" - {
+        val point = PolarPoint(Math.toRadians(90.0), 1.0, 0)
+
+        "identical are the same" {
+            val point2 = PolarPoint(Math.toRadians(90.0), 1.0, 0)
+            point shouldBe point2
+        }
+
+        "takes quality into account" {
+            val pointB = PolarPoint(Math.toRadians(90.0), 1.0, 1)
+            point shouldNotBe pointB
+        }
+
+        "checks for class" {
+            point shouldNotBe Object()
+        }
+
+        "checks for x-axis" {
+            val pointX = PolarPoint(Math.toRadians(0.0), 1.0, 0)
+            val pointWithBiggerX = PolarPoint(Math.toRadians(0.0), 1.1, 0)
+            val pointWithSmallerX = PolarPoint(Math.toRadians(0.0), 0.9, 0)
+
+            pointX shouldNotBe pointWithBiggerX
+            pointX shouldNotBe pointWithSmallerX
+        }
+
+        "checks for y-axis" {
+            val pointWithBiggerY = PolarPoint(Math.toRadians(90.0), 1.1, 0)
+            val pointWithSmallerY = PolarPoint(Math.toRadians(90.0), 0.9, 0)
+
+            point shouldNotBe pointWithBiggerY
+            point shouldNotBe pointWithSmallerY
+        }
+
+    }
+
+    "normalizedDirection" {
+        val pointsAndLengths = table(
+            headers("point", "length"),
+            row(
+                PolarPoint(Math.toRadians(45.0), 1.0, 0),
+                1.0
+            ),
+            row(
+                PolarPoint(Math.toRadians(45.0), sqrt(2.0), 0),
+                sqrt(2.0)
+            ),
+            row(
+                PolarPoint(Math.toRadians(45.0), 2 * sqrt(2.0), 0),
+                2 * sqrt(2.0)
             )
+        )
 
-            forAll(
-                pointsAndLengths
-            ) { point, _ ->
-                val vec = point.normalizedDirection()
-                sqrt(vec.first.pow(2) + vec.second.pow(2)) shouldBe (1.0 plusOrMinus PRECISION)
-            }
+        forAll(
+            pointsAndLengths
+        ) { point, _ ->
+            val vec = point.normalizedDirection()
+            sqrt(vec.first.pow(2) + vec.second.pow(2)) shouldBe (1.0 plusOrMinus PRECISION)
         }
+    }
 
-        "rotateBy" {
-            val pointsAndRotations = table(
-                headers("point", "rotation", "point after rotation"),
-                row(
-                    PolarPoint(0.0, 1.0, 0),
-                    Math.toRadians(45.0),
-                    PolarPoint(Math.toRadians(45.0), 1.0, 0)
-                ),
-                row(
-                    PolarPoint(Math.toRadians(45.0), sqrt(2.0), 0),
-                    Math.toRadians(-45.0),
-                    PolarPoint(0.0, sqrt(2.0), 0)
-                ),
-                row(
-                    PolarPoint(Math.toRadians(45.0), 2 * sqrt(2.0), 0),
-                    Math.toRadians(180.0),
-                    PolarPoint(Math.toRadians(225.0), 2 * sqrt(2.0), 0)
-                )
+    "rotateBy" {
+        val pointsAndRotations = table(
+            headers("point", "rotation", "point after rotation"),
+            row(
+                PolarPoint(0.0, 1.0, 0),
+                Math.toRadians(45.0),
+                PolarPoint(Math.toRadians(45.0), 1.0, 0)
+            ),
+            row(
+                PolarPoint(Math.toRadians(45.0), sqrt(2.0), 0),
+                Math.toRadians(-45.0),
+                PolarPoint(0.0, sqrt(2.0), 0)
+            ),
+            row(
+                PolarPoint(Math.toRadians(45.0), 2 * sqrt(2.0), 0),
+                Math.toRadians(180.0),
+                PolarPoint(Math.toRadians(225.0), 2 * sqrt(2.0), 0)
             )
+        )
 
-            forAll(
-                pointsAndRotations
-            ) { point, rotation, targetPoint ->
-                val rotatedPoint = point.rotateBy(rotation)
-                rotatedPoint shouldBe targetPoint
-            }
+        forAll(
+            pointsAndRotations
+        ) { point, rotation, targetPoint ->
+            val rotatedPoint = point.rotateBy(rotation)
+            rotatedPoint shouldBe targetPoint
         }
+    }
 
-        "toTSV" {
-            val point = PolarPoint(2.0, 3.0, 1)
-            val targetString = "3.0\t2.0\t1"
-            point.toTSVString() shouldBe targetString
-        }
+    "toTSV" {
+        val point = PolarPoint(2.0, 3.0, 1)
+        val targetString = "3.0\t2.0\t1"
+        point.toTSVString() shouldBe targetString
+    }
 
     "computes x and y correctly" {
         val pointsAndLengths = table(
