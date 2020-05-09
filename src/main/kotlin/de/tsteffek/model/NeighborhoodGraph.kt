@@ -33,6 +33,7 @@ data class NeighborhoodGraph<T : GeometricObject>(
          * Computes the [NeighborhoodGraph] of a [List] of [T]s using brute
          * force. Depending on the type of [T], more efficient algorithms may
          * be available.
+         * **Warning**: May produce inconsistent results for lists with identical elements.
          * @param numberClosestNeighbors amount of closest neighbors to detect,
          * defaults to 2
          */
@@ -131,7 +132,7 @@ data class NeighborhoodGraph<T : GeometricObject>(
             val nextPoint = iterator.next()
 
             val shortestPossibleDistance = distanceOriginLineToPoint(nextPoint.angle, it)
-            if (distanceToClosest < shortestPossibleDistance || it == nextPoint) return closestPoint
+            if (distanceToClosest < shortestPossibleDistance || it === nextPoint) return closestPoint
 
             val distanceToNext = distance(it, nextPoint)
             return if (distanceToClosest < distanceToNext)
